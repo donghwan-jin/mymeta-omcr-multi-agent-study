@@ -1,0 +1,10 @@
+{
+  "name": "oh-my-claudecode-research",
+  "version": "0.1.0",
+  "description": "Research-team agents for Claude Code: supervisor, analysis-implementer, paper-writer, figure-descriptor, reviewer.",
+  "author": { "name": "Young-Eun Lee" },
+  "license": "MIT",
+  "keywords": ["claude-code", "plugin", "research", "academic", "agents"],
+  "agents": "./agents/",
+  "hooks": "./hooks/hooks.json"
+}
