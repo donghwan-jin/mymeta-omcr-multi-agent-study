@@ -30,7 +30,7 @@ Start at [`Home.md`](Home.md) for navigation.
 - `With-OMC.md` — OMCR + OMC companion install + workflows
 - `Configuration.md` — `## Research stack` block + env vars
 - `OMC-Tool-Reference.md` — 47 OMC MCP tools mapped to research workflow
-- `Agents.md` — 5 agents reference
-- `Commands.md` — `/todofig`, `/sync`, `cropfig`
+- `Agents.md` — 6 agents reference
+- `Commands.md` — `/todofig`, `/sync`, `cropfig`, `verify-citation`
 - `Hooks.md` — 3 hooks
 - `Specializing.md` — Author a field-specific preset

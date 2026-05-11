@@ -1,6 +1,6 @@
 # oh-my-claudecode-research — Wiki
 
-A small Claude Code plugin that ships a **5-agent research team** + **3 lightweight hooks** + **2 parameterized commands** + **1 generic skill**, all tailored for producing research papers (or any structured-figure-and-outline document).
+A small Claude Code plugin that ships a **6-agent research team** + **3 lightweight hooks** + **2 parameterized commands** + **2 skills**, all tailored for producing research papers (or any structured-figure-and-outline document).
 
 This wiki is the documentation deep dive. The [README](../README.md) is the quick overview.
 
@@ -13,8 +13,8 @@ This wiki is the documentation deep dive. The [README](../README.md) is the quic
 - **[With OMC](With-OMC.md)** — Installing OMC alongside for richer features
 
 ### Reference
-- **[Agents](Agents.md)** — The 5 core agents (supervisor / analysis-implementer / paper-writer / figure-descriptor / reviewer)
-- **[Commands](Commands.md)** — `/todofig`, `/sync`, and the `cropfig` skill
+- **[Agents](Agents.md)** — The 6 core agents (supervisor / analysis-implementer / paper-writer / figure-descriptor / reviewer / literature-curator)
+- **[Commands](Commands.md)** — `/todofig`, `/sync`, and the `cropfig` + `verify-citation` skills
 - **[Hooks](Hooks.md)** — `pii-scrub`, `memory-load`, `citation-warn`
 - **[OMC Tool Reference](OMC-Tool-Reference.md)** — 47 OMC MCP tools mapped to research workflow stages
 
@@ -35,18 +35,19 @@ Are you writing a paper / structured outline doc with figures?
 
 ## What OMCR is
 
-OMCR is a **research-team persona pack**. It does not orchestrate analyses, run code, or call MCPs. It ships agent prompts and conventions that, when loaded into Claude Code, give you 5 specialists you can `@`-mention:
+OMCR is a **research-team persona pack**. It does not orchestrate analyses, run code, or call MCPs. It ships agent prompts and conventions that, when loaded into Claude Code, give you 6 specialists you can `@`-mention:
 
 - `@supervisor` — PI-level vision keeper + project orchestrator
 - `@analysis-implementer` — analysis pipeline implementer (field-neutral; overlay a preset for domain flavor)
 - `@paper-writer` — manuscript drafting & revision at high-impact-venue prose quality
 - `@figure-descriptor` — figure design briefs (no images, just implementation-ready specs)
 - `@reviewer` — adversarial pre-submission review at the target venue's level
+- `@literature-curator` — BibTeX + summary-table owner; resolves `[CITE: ...]` placeholders and verifies every citation against CrossRef/OpenAlex
 
 Plus the harness:
 - 3 hooks (PII guard, MEMORY auto-load, citation warning)
 - 2 slash commands (`/todofig` and `/sync`) for figure-deck-vs-outline workflows
-- 1 skill (`cropfig`) for stripping caption bands from exported figure PNGs
+- 2 skills (`cropfig` for stripping caption bands from exported figure PNGs; `verify-citation` for gating every citation added to the bibliography)
 
 ## What OMCR is NOT
 

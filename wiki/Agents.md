@@ -1,6 +1,6 @@
 # Agents — reference
 
-OMCR ships 5 agents under `agents/`. Each is a single markdown file with YAML frontmatter (loaded into Claude Code's `@`-mention picker) plus a structured prose body.
+OMCR ships 6 agents under `agents/`. Each is a single markdown file with YAML frontmatter (loaded into Claude Code's `@`-mention picker) plus a structured prose body.
 
 ## `@supervisor`
 
@@ -101,25 +101,51 @@ OMCR ships 5 agents under `agents/`. Each is a single markdown file with YAML fr
 
 [Source: `agents/reviewer.md`](../agents/reviewer.md) | Generic attack vectors are in the agent body; for domain-specific attacks see `examples/<field>/`.
 
+## `@literature-curator`
+
+**Role:** Bibliography curator. Owns the project's BibTeX file and the human-readable summary table (CSV) in lockstep — every citation that lands in the manuscript is registered in both files with verified metadata and a one-line role/finding summary.
+
+**When to use:**
+- "Resolve the `[CITE: ...]` placeholders in this section"
+- "Add Smith et al. 2023 to our bibliography"
+- "Did we cite the right paper for the claim about [X]?"
+- "Audit our BibTeX — are any entries fabricated or wrong?"
+- "Build the related-work bibliography for the Introduction"
+
+**Reads:** project CLAUDE.md (BibTeX file path, summary-table path, citekey convention), `literature-curator/MEMORY.md` (anchor list, failed searches, preferred sources), the BibTeX file and the summary table themselves.
+
+**Writes:** appends to / updates `references.bib` and `references.csv` (or the configured paths) in lockstep; runs the `verify-citation` skill on every new entry; updates `literature-curator/MEMORY.md` with anchor-list and audit status.
+
+**Defers to:** `@supervisor` for rhetorical framing (which papers the manuscript engages with, the `bucket` assignment for each entry). Hands off claim-by-claim citation insertion to `@paper-writer`.
+
+**Model:** `sonnet` (color: purple, memory: project).
+
+[Source: `agents/literature-curator.md`](../agents/literature-curator.md) | [Skill: `skills/verify-citation/`](../skills/verify-citation/SKILL.md)
+
 ## Agent interaction pattern
 
 ```
-                    @supervisor
-                   ┌───────┼───────┐
-                   ▼       ▼       ▼
-          @analysis-    @paper-    @figure-
-           implementer   writer    descriptor
-                   ▲       ▲       ▲
-                   └───────┼───────┘
-                       @reviewer
-                         (any output may be reviewed)
+                       @supervisor
+                  ┌────────┼────────────────┐
+                  ▼        ▼                ▼
+          @analysis-    @paper-          @figure-
+           implementer   writer          descriptor
+                          │ ▲
+                          ▼ │  [CITE: ...] resolution
+                     @literature-curator
+                  (BibTeX + summary table)
+                          ▲
+                          │ (anchor list, verification asks)
+                  ┌───────┴───────┐
+                  │   @reviewer   │  (stress-tests any output)
+                  └───────────────┘
 ```
 
-`@supervisor` defines the task. The three "doer" agents (`@analysis-implementer`, `@paper-writer`, `@figure-descriptor`) produce outputs. `@reviewer` stress-tests any output. Concerns flow back to `@supervisor` for routing.
+`@supervisor` defines the task. The three "doer" agents (`@analysis-implementer`, `@paper-writer`, `@figure-descriptor`) produce outputs. `@paper-writer` leaves `[CITE: ...]` placeholders that `@literature-curator` resolves into verified citekeys. `@reviewer` stress-tests any output. Concerns flow back to `@supervisor` for routing.
 
 ## Frontmatter contract
 
-All 5 agents follow this YAML frontmatter shape (mirrors upstream `oh-my-claudecode/agents/executor.md`):
+All 6 agents follow this YAML frontmatter shape (mirrors upstream `oh-my-claudecode/agents/executor.md`):
 
 ```yaml
 ---

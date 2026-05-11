@@ -5,9 +5,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Repository status
 
 v0.1.x of a Claude Code plugin that ships:
-- 5 research-team agents (`agents/`)
+- 6 research-team agents (`agents/`)
 - 2 parameterized slash commands (`commands/`)
-- 1 figure-cropping skill (`skills/cropfig/`)
+- 2 skills (`skills/cropfig/`, `skills/verify-citation/`)
 - 3 lightweight hooks (`hooks/`)
 - a canonical memory schema (`templates/MEMORY.template.md`)
 - the plugin manifest (`.claude-plugin/plugin.json`)
@@ -45,19 +45,23 @@ Rules that apply to **all** symlinks in this section:
 oh-my-claudecode-research/
 ├── .claude-plugin/plugin.json        # plugin manifest (registers agents/commands/skills/hooks)
 ├── .gitattributes                    # LF line-ending normalization
-├── agents/                           # 5 generic core agents (kebab-case, frontmatter required)
+├── agents/                           # 6 generic core agents (kebab-case, frontmatter required)
 │   ├── supervisor.md
 │   ├── analysis-implementer.md
 │   ├── paper-writer.md
 │   ├── figure-descriptor.md
-│   └── reviewer.md
+│   ├── reviewer.md
+│   └── literature-curator.md         # bibliography curator + BibTeX/summary-table owner
 ├── commands/                         # 2 parameterized slash commands
 │   ├── todofig.md                    # /todofig — deck-vs-outline gap analyzer
 │   └── sync.md                       # /sync — state reconciler + optional figure embed
 ├── skills/
-│   └── cropfig/                      # generic figure-only crop (env-var + CLAUDE.md driven)
+│   ├── cropfig/                      # generic figure-only crop (env-var + CLAUDE.md driven)
+│   │   ├── SKILL.md
+│   │   └── crop_top_label.py
+│   └── verify-citation/              # CrossRef/OpenAlex existence + metadata check; updates summary CSV
 │       ├── SKILL.md
-│       └── crop_top_label.py
+│       └── verify_citation.py
 ├── hooks/                            # 3 shell-script hooks + their config
 │   ├── hooks.json                    # event registration
 │   ├── pii-scrub.sh                  # PreToolUse:Write|Edit blocker
@@ -68,7 +72,7 @@ oh-my-claudecode-research/
 ├── examples/                         # field-specific overlays
 │   └── neuro-fmri/                   # worked specialization for neuroimaging studies (fMRI preprocessing / parcellation / connectivity / ISC)
 │       ├── agents/                   # neuro-flavored analysis-implementer body
-│       ├── memory-templates/         # 5 redacted MEMORY.md skeletons
+│       ├── memory-templates/         # 6 redacted MEMORY.md skeletons
 │       └── README.md                 # how to overlay + author-your-own guide
 ├── templates/
 │   └── MEMORY.template.md            # canonical empty MEMORY.md schema
@@ -79,7 +83,7 @@ oh-my-claudecode-research/
 │   ├── With-OMC.md                   # OMCR + OMC companion install
 │   ├── Configuration.md              # ## Research stack block reference + env vars
 │   ├── OMC-Tool-Reference.md         # 47 OMC MCP tools mapped to research stages
-│   ├── Agents.md                     # 5 agents reference
+│   ├── Agents.md                     # 6 agents reference
 │   ├── Commands.md                   # /todofig + /sync + cropfig reference
 │   ├── Hooks.md                      # 3 hooks reference
 │   ├── Specializing.md               # author a field-specific preset

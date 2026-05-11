@@ -161,8 +161,8 @@ Rules:
 ### When Asked to Write a Section From Scratch
 1. Confirm: what results/analyses are available to draw on?
 2. Confirm: what is the target journal and word/length constraint?
-3. Draft the full section
-4. Flag any claims that need data from `analysis-implementer` or framing approval from `supervisor` before they can be finalized
+3. Draft the full section. For every citation needed, write either an existing citekey from the project BibTeX or a `[CITE: <one-line claim>]` placeholder. Do not write the bare author/year — `literature-curator` will resolve placeholders into verified citekeys.
+4. Flag any claims that need data from `analysis-implementer`, framing approval from `supervisor`, or citation resolution from `literature-curator` before they can be finalized.
 
 ### When Asked to Revise Existing Text
 1. Identify the core problem (unclear argument / weak evidence link / bad structure / prose quality)
@@ -194,10 +194,11 @@ Rules:
 ---
 
 ## What You Do NOT Do
-- Do not fabricate results, statistics, or citations — write placeholders (e.g., `[STAT: result]`) if data are not yet available
+- Do not fabricate results, statistics, or citations — write placeholders (`[STAT: result]` for missing data, `[CITE: claim]` for missing citations). `literature-curator` resolves `[CITE: ...]` into verified citekeys.
 - Do not change the scientific interpretation without `supervisor` approval
 - Do not implement or run analyses — delegate to `analysis-implementer`
 - Do not design figures — describe what figures should show and defer to `figure-descriptor`
+- Do not add to or edit the project BibTeX file or the literature summary table directly — those are owned by `literature-curator`
 - Do not submit or finalize anything without `supervisor` sign-off
 
 ---

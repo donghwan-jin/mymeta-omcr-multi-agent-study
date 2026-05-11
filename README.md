@@ -1,6 +1,6 @@
 # oh-my-claudecode-research
 
-A Claude Code plugin that ships a **5-agent research team** + **2 parameterized commands** + **1 figure-cropping skill** + **3 lightweight hooks**, all tailored for producing research papers (or any structured-figure-and-outline document).
+A Claude Code plugin that ships a **6-agent research team** + **2 parameterized commands** + **2 skills** + **3 lightweight hooks**, all tailored for producing research papers (or any structured-figure-and-outline document).
 
 This is the **research companion** to upstream [`oh-my-claudecode`](https://github.com/Yeachan-Heo/oh-my-claudecode), not a fork. OMCR works standalone or alongside OMC — see [`wiki/With-OMC.md`](wiki/With-OMC.md) for the companion setup.
 
@@ -10,7 +10,7 @@ This is the **research companion** to upstream [`oh-my-claudecode`](https://gith
 
 ## What you get
 
-### 5 agents (`@`-mention)
+### 6 agents (`@`-mention)
 
 | Agent | Role |
 |---|---|
@@ -19,6 +19,7 @@ This is the **research companion** to upstream [`oh-my-claudecode`](https://gith
 | `@paper-writer` | Drafts manuscript sections at high-impact-venue prose quality. |
 | `@figure-descriptor` | Designs figures as implementation-ready briefs — no image generation. |
 | `@reviewer` | Adversarial pre-submission review at the target venue's level. |
+| `@literature-curator` | Owns the project BibTeX + literature summary table in lockstep. Resolves `[CITE: ...]` placeholders, verifies citations via the `verify-citation` skill, never fabricates. |
 
 ### 2 slash commands (parameterized via your project's CLAUDE.md)
 
@@ -27,11 +28,12 @@ This is the **research companion** to upstream [`oh-my-claudecode`](https://gith
 | `/todofig [Fig N]` | Compare a captured figure deck against an outline → prioritized P0/P1/P2 TODO. |
 | `/sync` | Reconcile current state (deck) with goal (outline), refresh agent memories, optionally embed cropped figures into a target document. Status snapshot, not a TODO. |
 
-### 1 skill
+### 2 skills
 
 | Skill | What it does |
 |---|---|
 | `cropfig` | Tight-crop captioned figure PNGs to figure-only content. Used by `/sync` Phase 4 for `.docx` embedding without caption duplication. |
+| `verify-citation` | Existence + metadata check via CrossRef/OpenAlex. Gates every entry `@literature-curator` adds, writes verification verdict into the project summary table. |
 
 ### 3 hooks
 
@@ -51,8 +53,9 @@ git clone https://github.com/youngeun1209/oh-my-claudecode-research \
 ```
 
 Then in any project, open Claude Code and run `/plugin` to load it. After load:
-- 5 agents appear in the `@`-mention picker
+- 6 agents appear in the `@`-mention picker
 - `/todofig`, `/sync` appear in the slash-command picker
+- 2 skills (`cropfig`, `verify-citation`) become invocable
 - 3 hooks register on session start
 
 **Cherry-pick by file** (no plugin manager — copy agents into a specific project):
@@ -107,7 +110,7 @@ Full walkthrough: [`wiki/Getting-Started.md`](wiki/Getting-Started.md)
 
 Core agents and commands are field-neutral. For domain-specific flavor (e.g., neuroscience methodology, wet-lab conventions, ML evaluation idioms), overlay a preset from `examples/<field>/`. Currently shipped:
 
-- **[`examples/neuro-fmri/`](examples/neuro-fmri/)** — generic neuro-fMRI specialization. Provides a neuro-flavored `analysis-implementer` body (preprocessing / parcellation / connectivity / ISC / spin tests) + redacted MEMORY.md skeletons for all 5 agents.
+- **[`examples/neuro-fmri/`](examples/neuro-fmri/)** — generic neuro-fMRI specialization. Provides a neuro-flavored `analysis-implementer` body (preprocessing / parcellation / connectivity / ISC / spin tests) + redacted MEMORY.md skeletons for all 6 agents.
 
 Quick overlay:
 
@@ -115,7 +118,7 @@ Quick overlay:
 cp examples/neuro-fmri/agents/analysis-implementer.md agents/analysis-implementer.md
 
 # In your project:
-for agent in supervisor analysis-implementer paper-writer figure-descriptor reviewer; do
+for agent in supervisor analysis-implementer paper-writer figure-descriptor reviewer literature-curator; do
   mkdir -p .claude/agent-memory/$agent
   cp examples/neuro-fmri/memory-templates/$agent/MEMORY.md \
      .claude/agent-memory/$agent/MEMORY.md
@@ -131,7 +134,7 @@ OMCR treats [`oh-my-claudecode`](https://github.com/Yeachan-Heo/oh-my-claudecode
 | Component | Why for research |
 |---|---|
 | `@scientist` agent | Statistical-rigor enforcer (CIs / p-values / effect sizes / `[LIMITATION]` markers). Companion to `@analysis-implementer`. |
-| `@document-specialist` agent | Literature research with citation verification (Context Hub). Fills our literature-anchoring gap. |
+| `@document-specialist` agent | Heavier-weight literature research backed by OMC's Context Hub (cached fetches, structured notes). Use alongside `@literature-curator` when a survey-scale dive is needed; OMCR's curator handles per-claim citation resolution and BibTeX/summary-table bookkeeping on its own. |
 | `@verifier` agent | Evidence-based completion checks — rejects "should work" claims without fresh test output. |
 | `@tracer` agent + `/oh-my-claudecode:trace` | Evidence-driven competing-hypotheses ranking with disconfirmation. Maps to methods/results validation. |
 | `@writer` agent | Technical-documentation writer for lab protocols, methods appendices, reproducibility guides. |

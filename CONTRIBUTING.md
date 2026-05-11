@@ -1,6 +1,6 @@
 # Contributing to oh-my-claudecode-research
 
-This is a small repo with a focused scope: 5 research-team agents, 3 lightweight hooks, and field-specific example presets. Contributions that fit that scope are welcome. Contributions that expand it (npm publishing, build pipelines, domain-specific helpers in the core, etc.) probably belong in upstream [`oh-my-claudecode`](https://github.com/Yeachan-Heo/oh-my-claudecode) instead.
+This is a small repo with a focused scope: 6 research-team agents, 3 lightweight hooks, and field-specific example presets. Contributions that fit that scope are welcome. Contributions that expand it (npm publishing, build pipelines, domain-specific helpers in the core, etc.) probably belong in upstream [`oh-my-claudecode`](https://github.com/Yeachan-Heo/oh-my-claudecode) instead.
 
 ## How to propose a new agent
 
@@ -8,7 +8,7 @@ The bar for adding an agent to `agents/` is high. New agents must:
 
 1. **Be reusable across research fields.** Domain-specific knowledge belongs in a preset under `examples/<field>/`, not the core.
 2. **Justify why they're not a skill.** Skills are for procedural workflows; agents are for personas with persistent state and judgment. If your candidate fits "this is a procedure that runs end-to-end", it's a skill, not an agent.
-3. **Cover an unmet research-team role.** The 5 agents (supervisor / analysis-implementer / paper-writer / figure-descriptor / reviewer) cover the canonical pipeline. New agents should fill a real gap, not duplicate.
+3. **Cover an unmet research-team role.** The 6 agents (supervisor / analysis-implementer / paper-writer / figure-descriptor / reviewer / literature-curator) cover the canonical pipeline. New agents should fill a real gap, not duplicate.
 
 If your candidate clears those, open an issue first to discuss before sending a PR.
 

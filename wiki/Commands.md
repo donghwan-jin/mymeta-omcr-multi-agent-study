@@ -1,6 +1,6 @@
 # Commands — reference
 
-OMCR ships 2 slash commands and 1 invocable skill, all parameterized via the [Research stack block](Configuration.md) in your project's `CLAUDE.md`.
+OMCR ships 2 slash commands and 2 invocable skills, all parameterized via the [Research stack block](Configuration.md) in your project's `CLAUDE.md`.
 
 ## `/todofig`
 
@@ -195,6 +195,51 @@ Or as a Python import:
 from skills.cropfig.crop_top_label import main
 main(src="path/to/captured", dst="path/to/tight")
 ```
+
+## `verify-citation` (skill, not a slash command)
+
+**Goal:** Verify that an academic citation exists and that its metadata matches what is claimed for it. Hits CrossRef for canonical metadata, OpenAlex for the abstract, and optionally writes the verdict into the project's literature summary table (`references.csv` by default) without clobbering human-curated columns.
+
+**Invocation:** Used primarily by `@literature-curator` as a gate on every citation added to the bibliography. Can also be invoked directly for one-off audits.
+
+**Inputs:** `BIB_FILE`, `SUMMARY_FILE`, `CITATION_VERIFY_EMAIL` (env vars) or the corresponding Research-stack fields.
+
+**Modes:**
+
+```bash
+# Verify a single DOI (existence check + fetch metadata + fetch abstract)
+python3 .../verify_citation.py --doi 10.1038/nature14236
+
+# Verify one citekey from the project BibTeX
+python3 .../verify_citation.py --bib references.bib --key smith2023connectome
+
+# Full audit of the BibTeX
+python3 .../verify_citation.py --bib references.bib
+
+# Full audit AND write verified_on/verify_status into the summary table
+python3 .../verify_citation.py --bib references.bib --summary-csv references.csv
+
+# Attach a one-line claim for downstream logging (skill does NOT judge claim-fit — the agent reads the abstract and decides)
+python3 .../verify_citation.py --doi 10.1038/nature14236 \
+        --claim "DQN reaches human-level performance on Atari"
+```
+
+**Statuses:**
+
+| Status | Meaning |
+|---|---|
+| `PASS` | DOI resolves AND title/authors/year all match (case-insensitive, normalized) |
+| `MISMATCH` | Found at CrossRef but at least one metadata field disagrees with the BibTeX entry |
+| `NOT_FOUND` | DOI does not resolve and title+author search returns no plausible match |
+| `NOT_VERIFIED` | Network error — not treated as a pass |
+
+**Exit codes:** `0` = all PASS; `1` = at least one MISMATCH/NOT_FOUND/NOT_VERIFIED; `2` = script error (missing file, malformed BibTeX, persistent network failure).
+
+**Summary-table columns the skill writes:** `verified_on` (YYYY-MM-DD), `verify_status`. Plus bibliographic defaults (`authors`, `year`, `title`, `venue`, `doi`) **only when the row is blank** — never overwrites curator-curated columns (`bucket`, `our_use`, `paper_says`, `cited_sections`).
+
+**Implementation:** Pure Python stdlib (urllib + csv + json + re) — no external dependencies.
+
+[Source: `skills/verify-citation/SKILL.md`](../skills/verify-citation/SKILL.md) and [`verify_citation.py`](../skills/verify-citation/verify_citation.py)
 
 ## See also
 

@@ -129,7 +129,7 @@ AST-grep based search / replace. More precise than regex.
 
 ## How OMCR-side agents can call OMC tools
 
-Currently (v0.1.x), OMCR's 5 agents are prompt-only — they don't directly invoke OMC's MCP tools. But Claude Code's session-level tool list includes both OMCR's hooks and OMC's MCP tools when both are installed, so:
+Currently (v0.1.x), OMCR's 6 agents are prompt-only — they don't directly invoke OMC's MCP tools. But Claude Code's session-level tool list includes both OMCR's hooks and OMC's MCP tools when both are installed, so:
 
 - A user can ask `@analysis-implementer` to "use python_repl to test the spin-test" and the agent will use OMC's MCP tool naturally.
 - A user can ask `@supervisor` to "search session history for our decision about parameter k" and the agent will use `session_search`.

@@ -30,15 +30,17 @@ examples/<field>/
     ├── analysis-implementer/MEMORY.md
     ├── paper-writer/MEMORY.md
     ├── figure-descriptor/MEMORY.md
-    └── reviewer/MEMORY.md
+    ├── reviewer/MEMORY.md
+    └── literature-curator/MEMORY.md
 ```
 
-Not all 5 agents need a preset variant. In practice:
+Not all 6 agents need a preset variant. In practice:
 - **`analysis-implementer`** — almost always needs a preset (tooling and methodology differ most)
 - **`figure-descriptor`** — often needs a preset (plot conventions differ)
 - **`reviewer`** — sometimes needs a preset (attack vectors differ)
 - **`supervisor`** — rarely needs a preset (PI role is field-agnostic)
 - **`paper-writer`** — rarely needs a preset (high-impact prose is similar everywhere)
+- **`literature-curator`** — rarely needs a body overlay, but a preset memory skeleton helps (preferred sources differ by field: PubMed for biomed, arXiv for ML/physics, ADS for astronomy, Web of Science for cross-field)
 
 ## 4-step recipe
 
@@ -67,7 +69,7 @@ For `reviewer`, typically:
 
 ### Step 3 — Produce redacted memory skeletons
 
-For each of the 5 agents (including ones whose body you didn't overlay), produce a `MEMORY.md` skeleton showing what an agent in your field typically tracks. **Redact concrete project content** — leave placeholder fields (`[PROJECT_TITLE]`, `[TARGET_VENUE]`, etc.) but show the structure.
+For each of the 6 agents (including ones whose body you didn't overlay), produce a `MEMORY.md` skeleton showing what an agent in your field typically tracks. **Redact concrete project content** — leave placeholder fields (`[PROJECT_TITLE]`, `[TARGET_VENUE]`, etc.) but show the structure.
 
 For example, a wet-lab biology `analysis-implementer/MEMORY.md` might track:
 - Cell line identity + STR profile date
@@ -112,17 +114,18 @@ The neuro-fmri preset overlays only `analysis-implementer` because:
 - `supervisor`, `paper-writer`, `figure-descriptor`, `reviewer` work as-is with placeholder fills via project CLAUDE.md
 - `analysis-implementer`'s neuro-flavored body adds: nilearn / nibabel / parcellation expertise (Schaefer / Gordon / AAL / HCP-MMP), fMRI preprocessing pitfalls (TR / scrubbing / confound regression), ISC, spin tests, MATLAB-Python interop conventions
 
-It also ships redacted memory skeletons for all 5 agents because each agent in a neuroimaging project tracks a distinctive set of state:
+It also ships redacted memory skeletons for all 6 agents because each agent in a neuroimaging project tracks a distinctive set of state:
 - `supervisor/MEMORY.md` — hypothesis log, literature anchors, narrative spine evolution
 - `analysis-implementer/MEMORY.md` — pipeline hyperparameters, subject exclusions, pipeline state
 - `paper-writer/MEMORY.md` — section status, nomenclature decisions, venue requirements
 - `figure-descriptor/MEMORY.md` — color system (condition → color mapping), figure list with status
 - `reviewer/MEMORY.md` — field-specific attack vectors (parameter sensitivity, circularity, motion confounds), open concerns
+- `literature-curator/MEMORY.md` — BibTeX/summary-table paths, 4-bucket anchor list, preferred sources (PubMed / bioRxiv), failed-search log
 
 The pattern transfers to other fields with substitutions: swap "fMRI" for your data modality, swap the attack vectors for the ones reviewers in your field use.
 
 ## See also
 
 - [`examples/neuro-fmri/README.md`](../examples/neuro-fmri/README.md) — the canonical worked example
-- [Agents](Agents.md) — the 5 core agents being overlaid
+- [Agents](Agents.md) — the 6 core agents being overlaid
 - [CONTRIBUTING](../CONTRIBUTING.md) — full contribution contract (frontmatter / MEMORY schema / PII / commits)

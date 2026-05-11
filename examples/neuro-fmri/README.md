@@ -3,7 +3,7 @@
 This is a concrete, neuro-fMRI-flavored specialization layered on top of OMCR's core. The core ships field-neutral agents, parameterized commands, and a generic cropfig skill (all in the repo root under `agents/`, `commands/`, `skills/`); this directory adds the **domain content** that makes those generic surfaces useful for a neuroimaging study:
 
 - A neuro-flavored body for the `analysis-implementer` agent (concrete fMRI preprocessing / parcellation / connectivity / statistical-convention expertise that the field-neutral core agent does not assume)
-- Redacted MEMORY.md skeletons showing what each of the 5 agents typically tracks in a neuroimaging project
+- Redacted MEMORY.md skeletons showing what each of the 6 agents typically tracks in a neuroimaging project
 
 Project-specific methodology (your particular pipeline, hyperparameters, dataset, hypothesis) belongs in **your project's** `.claude/agents/` overlay — not in this preset, which stays generic-neuroimaging-flavored so it ports across many studies.
 
@@ -14,12 +14,13 @@ examples/neuro-fmri/
 ├── README.md                                   # this file
 ├── agents/
 │   └── analysis-implementer.md                 # neuro-flavored body (nilearn / nibabel / Schaefer & other atlases / fMRI preprocessing / connectivity / ISC / spin tests)
-└── memory-templates/                           # redacted MEMORY.md skeletons for each of the 5 agents
+└── memory-templates/                           # redacted MEMORY.md skeletons for each of the 6 agents
     ├── supervisor/MEMORY.md
     ├── analysis-implementer/MEMORY.md
     ├── paper-writer/MEMORY.md
     ├── figure-descriptor/MEMORY.md
-    └── reviewer/MEMORY.md
+    ├── reviewer/MEMORY.md
+    └── literature-curator/MEMORY.md
 ```
 
 The `cropfig` skill and the `/todofig` and `/sync` commands previously lived under this directory as worked examples. They've been **promoted to the core** (under `skills/cropfig/` and `commands/` at the repo root) and parameterized via a `Research stack` block in the user's project `CLAUDE.md`. See `wiki/Configuration.md` for how to point them at your project's paths.
@@ -33,7 +34,7 @@ After installing the core plugin, overlay this preset's files:
 cp examples/neuro-fmri/agents/analysis-implementer.md agents/analysis-implementer.md
 
 # 2. The MEMORY.md skeletons — copy into your project's .claude/agent-memory/<agent>/:
-for agent in supervisor analysis-implementer paper-writer figure-descriptor reviewer; do
+for agent in supervisor analysis-implementer paper-writer figure-descriptor reviewer literature-curator; do
   mkdir -p .claude/agent-memory/$agent
   cp examples/neuro-fmri/memory-templates/$agent/MEMORY.md .claude/agent-memory/$agent/MEMORY.md
 done
@@ -46,7 +47,7 @@ The cropfig skill and the `/todofig` and `/sync` commands are already shipped in
 | Surface | Core | Neuro preset |
 |---|---|---|
 | `analysis-implementer` agent body | Field-neutral; talks generically about ML / stats / simulation | Concrete neuroimaging tooling: `nilearn`, `nibabel`, `brainiak`, Schaefer/Gordon/AAL/HCP-MMP parcellations, fMRI preprocessing pitfalls, ISC, spin tests, MATLAB ↔ Python interop |
-| Memory templates | None (just `templates/MEMORY.template.md` schema) | Redacted skeletons for all 5 agents showing what each typically tracks in a neuroimaging project |
+| Memory templates | None (just `templates/MEMORY.template.md` schema) | Redacted skeletons for all 6 agents showing what each typically tracks in a neuroimaging project |
 
 ## Adapt to your stack
 

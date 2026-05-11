@@ -188,4 +188,4 @@ If you have OMC installed globally but want a specific project to use only OMCR 
 
 - [Configuration](Configuration.md) — research-stack block (shared between OMCR commands and OMC's autoresearch)
 - [OMC Tool Reference](OMC-Tool-Reference.md) — all 47 OMC MCP tools mapped to research workflow stages
-- [Agents](Agents.md) — OMCR's 5 agents reference
+- [Agents](Agents.md) — OMCR's 6 agents reference

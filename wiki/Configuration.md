@@ -116,7 +116,7 @@ echo "exit code: $?"   # expect 2 (blocked)
 
 ## CLAUDE.md project-context section
 
-Beyond the `## Research stack` block, your project's `CLAUDE.md` should also have a `## Project context` (or similar) block that the 5 agents read for hypothesis / venue / narrative:
+Beyond the `## Research stack` block, your project's `CLAUDE.md` should also have a `## Project context` (or similar) block that the 6 agents read for hypothesis / venue / narrative:
 
 ```markdown
 ## Project context
@@ -139,7 +139,7 @@ Beyond the `## Research stack` block, your project's `CLAUDE.md` should also hav
 - **Manuscript language:** English  (default — do not change)
 ```
 
-The 5 agents are coded to default to English. If you want user-facing reports in another language, set `User-dialog language` here and the agents will adapt.
+The 6 agents are coded to default to English. If you want user-facing reports in another language, set `User-dialog language` here and the agents will adapt.
 
 ## See also
 

@@ -31,12 +31,13 @@ After loading, in a Claude Code session:
 @
 ```
 
-The autocomplete picker should now show 5 agents:
+The autocomplete picker should now show 6 agents:
 - `@supervisor`
 - `@analysis-implementer`
 - `@paper-writer`
 - `@figure-descriptor`
 - `@reviewer`
+- `@literature-curator`
 
 Slash command picker should show:
 - `/todofig`

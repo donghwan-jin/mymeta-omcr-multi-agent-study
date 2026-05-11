@@ -8,7 +8,7 @@ If you also have OMC installed (or want to install it), see [With OMC](With-OMC.
 
 - You're early in a project and don't need a literature management database, an experiment-run registry, or a stateful Python REPL.
 - You want the lightest possible install. OMCR is plain markdown + shell — no Node, no MCP, no Python beyond the cropfig skill.
-- Your figure/outline workflow is straightforward (deck + outline + 5 agents covers it).
+- Your figure/outline workflow is straightforward (deck + outline + 6 agents covers it).
 
 ## What you get standalone
 
