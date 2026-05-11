@@ -15,6 +15,7 @@ Add a `## Research stack` section to your project's `CLAUDE.md`. The slash comma
 ```markdown
 ## Research stack (used by /todofig, /sync, /cropfig)
 
+- **Deck file:** decks/main.key  (optional — `.key` or `.pptx`; takes precedence over `Deck export script`)
 - **Deck export dir:** figures/captured/
 - **Tight-crop output dir:** figures/tight/
 - **Outline file:** outline.md
@@ -24,7 +25,7 @@ Add a `## Research stack` section to your project's `CLAUDE.md`. The slash comma
 - **Report language:** English
 - **Report output dir:** ./todofig_reports/
 - **Sync report dir:** ./sync_reports/
-- **Deck export script:** bash export.sh  (optional)
+- **Deck export script:** bash export.sh  (optional — used only when `Deck file` is unset)
 - **Embed target:** outline.docx  (optional — for /sync Phase 4)
 ```
 
@@ -116,33 +117,49 @@ echo "exit code: $?"   # expect 2 (blocked)
 
 ## CLAUDE.md project-context section
 
-Beyond the `## Research stack` block, your project's `CLAUDE.md` should also have a `## Project context` (or similar) block that the 6 agents read for hypothesis / venue / narrative:
+Beyond the `## Research stack` block, your project's `CLAUDE.md` should also have a `## Project context` block that the 6 agents read for scientific identity (hypothesis / venue / topic / datasets / narrative). The canonical schema:
 
 ```markdown
 ## Project context
 
-- **Working title:** [your project name]
-- **Field:** [your field]
+- **Working title:** [your project name or [TBD]]
+- **Field:** [your field / sub-field]
 - **First author / PI:** [your name] / [PI name]
-- **Target venue:** [target journal / conference]
-- **Central hypothesis:** [one sentence]
+- **Target venue:** [target journal / conference, or [TBD: short note]]
+- **Backup venues:** [comma-separated top 2–3, or [TBD]]
+- **Central hypothesis:** [one sentence, or [TBD: short note]]
+- **Research topic:** [the big-picture question — broader than the specific hypothesis; 1–2 sentences]
+- **Datasets:** [name, source, modality, size, access status — or [TBD]]
 - **Narrative spine:**
   1. *Gap:* [what the field has not established]
   2. *Question:* [the specific testable question]
   3. *Approach:* [methodology in one sentence]
   4. *Finding:* [filled as results emerge]
-  5. *Implication:* [what this changes]
+  5. *Implication:* [what this changes — or [TBD]]
+- **Preset overlay:** [neuro-fmri / none]
+```
 
-## Language preference (optional)
+Most of these fields are filled by running `/setup` interactively. The command **never invents** scientific identity — if you skip a scientific field, it stores `[TBD: <one-line note>]` so `@supervisor` knows to surface the gap later.
+
+### Field semantics
+
+- **Research topic vs. Central hypothesis.** The topic is the big-picture question your study sits inside (e.g. "How does network reconfiguration support flexible cognition?"); the hypothesis is the specific testable claim (e.g. "Network X shows greater state-dependent reconfiguration than Y during task Z."). Both matter — the topic anchors framing, the hypothesis anchors design.
+- **Datasets.** What `@analysis-implementer` builds against and what `paper-writer` describes in Methods. Include enough detail to be unambiguous: name, modality, sample size if known, public/restricted/private access status, ethics approval status.
+- **Target venue + Backup venues.** Drives reviewer expectations, word limits, figure budget, and `@reviewer`'s severity bar. Even a "top-1 choice + 2 backups" short list is far more useful than a single fixed venue, because `@supervisor` can advise framing pivots when results come in stronger or weaker than expected.
+
+## Language preference
+
+```markdown
+## Language preference
 
 - **User-dialog language:** Korean  (default is English)
 - **Manuscript language:** English  (default — do not change)
 ```
 
-The 6 agents are coded to default to English. If you want user-facing reports in another language, set `User-dialog language` here and the agents will adapt.
+The 6 agents are coded to default to English. If you want user-facing reports in another language, set `User-dialog language` here and the agents will adapt. Manuscript text stays in English regardless, for venue compatibility.
 
 ## See also
 
 - [Standalone Usage](Standalone-Usage.md) — using OMCR's commands with this config
-- [Commands](Commands.md) — full reference for `/todofig`, `/sync`, `cropfig`
-- [Hooks](Hooks.md) — full reference for the 3 hooks
+- [Commands](Commands.md) — full reference for `/setup`, `/todofig`, `/sync`, plus the `cropfig` + `verify-citation` skills
+- [Hooks](Hooks.md) — full reference for the 4 hooks

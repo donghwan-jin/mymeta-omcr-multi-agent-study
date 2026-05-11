@@ -1,6 +1,6 @@
 # oh-my-claudecode-research
 
-A Claude Code plugin that ships a **6-agent research team** + **2 parameterized commands** + **2 skills** + **3 lightweight hooks**, all tailored for producing research papers (or any structured-figure-and-outline document).
+A Claude Code plugin that ships a **6-agent research team** + **3 parameterized commands** + **2 skills** + **4 lightweight hooks**, all tailored for producing research papers (or any structured-figure-and-outline document).
 
 This is the **research companion** to upstream [`oh-my-claudecode`](https://github.com/Yeachan-Heo/oh-my-claudecode), not a fork. OMCR works standalone or alongside OMC — see [`wiki/With-OMC.md`](wiki/With-OMC.md) for the companion setup.
 
@@ -21,10 +21,11 @@ This is the **research companion** to upstream [`oh-my-claudecode`](https://gith
 | `@reviewer` | Adversarial pre-submission review at the target venue's level. |
 | `@literature-curator` | Owns the project BibTeX + literature summary table in lockstep. Resolves `[CITE: ...]` placeholders, verifies citations via the `verify-citation` skill, never fabricates. |
 
-### 2 slash commands (parameterized via your project's CLAUDE.md)
+### 3 slash commands (parameterized via your project's CLAUDE.md)
 
 | Command | What it does |
 |---|---|
+| `/setup [minimal\|neuro-fmri]` | First-run project initialization. Interview-based — asks for Project context (hypothesis / venue / topic / datasets) + Research stack (paths / BibTeX / etc.), scaffolds agent memory dirs, optionally applies a preset. Safe to re-run. |
 | `/todofig [Fig N]` | Compare a captured figure deck against an outline → prioritized P0/P1/P2 TODO. |
 | `/sync` | Reconcile current state (deck) with goal (outline), refresh agent memories, optionally embed cropped figures into a target document. Status snapshot, not a TODO. |
 
@@ -35,28 +36,39 @@ This is the **research companion** to upstream [`oh-my-claudecode`](https://gith
 | `cropfig` | Tight-crop captioned figure PNGs to figure-only content. Used by `/sync` Phase 4 for `.docx` embedding without caption duplication. |
 | `verify-citation` | Existence + metadata check via CrossRef/OpenAlex. Gates every entry `@literature-curator` adds, writes verification verdict into the project summary table. |
 
-### 3 hooks
+### 4 hooks
 
 | Hook | Event | Behavior |
 |---|---|---|
 | `pii-scrub` | `PreToolUse:Write\|Edit` | Blocks writes containing PII (emails / SSNs / subject IDs by default; configurable). |
 | `memory-load` | `SessionStart` | Auto-injects `.claude/agent-memory/*/MEMORY.md` into session context. |
 | `citation-warn` | `PostToolUse:Write\|Edit` | Heuristic non-blocking warning when manuscript markdown has uncited paragraphs. |
+| `setup-nudge` | `SessionStart` | One-line non-blocking nudge to run `/setup` if CLAUDE.md is missing the `## Project context` or `## Research stack` blocks. |
 
 ## Install
 
-**Recommended — Claude Code plugin:**
+**Recommended — Claude Code marketplace flow** (one slash command per line, enter them one at a time):
+
+```
+/plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
+```
+
+```
+/plugin install oh-my-claudecode-research
+```
+
+**Alternative — manual checkout** (no plugin manager):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
-Then in any project, open Claude Code and run `/plugin` to load it. After load:
+Then open Claude Code and run `/plugin` to load it. After load (either path):
 - 6 agents appear in the `@`-mention picker
-- `/todofig`, `/sync` appear in the slash-command picker
+- `/setup`, `/todofig`, `/sync` appear in the slash-command picker
 - 2 skills (`cropfig`, `verify-citation`) become invocable
-- 3 hooks register on session start
+- 4 hooks register on session start (PII guard, MEMORY auto-load, citation warning, setup nudge)
 
 **Cherry-pick by file** (no plugin manager — copy agents into a specific project):
 
@@ -69,29 +81,26 @@ This skips the commands, the skill, and the hooks. For full feature parity, use 
 
 ## Quick start
 
-After installing, open a research project and:
+After installing, open a research project and run:
+
+```
+/setup
+```
+
+This walks an interactive interview to fill in:
+- **Project context** (working title, field, target venue, central hypothesis, research topic, datasets, narrative spine)
+- **Research stack** (deck/outline paths, figure count, BibTeX + summary-table paths for `@literature-curator`, optional CrossRef email for `verify-citation`)
+- **Preset overlay** (optional — apply `examples/neuro-fmri/` for neuroimaging conventions)
+
+`/setup` then scaffolds `.claude/agent-memory/<agent>/MEMORY.md` for all 6 agents (from the preset if selected, otherwise from the canonical schema), and initializes empty `references.bib` + `references.csv` for the literature-curator. **Fields you're not ready to answer** (e.g., target venue still undecided) are saved as `[TBD: short note]` — never invented — so `@supervisor` knows to follow up.
+
+If you skip `/setup`, the SessionStart hook prints a one-line nudge at the start of every session until you do. Suppress with `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1`.
+
+After `/setup`, start a real conversation:
 
 ```
 @supervisor where are we?
 ```
-
-Supervisor reads the project's `CLAUDE.md` (and any `agent-memory/supervisor/MEMORY.md`) and orients you on status + next action. If `CLAUDE.md` is missing key fields (hypothesis / target venue / field), supervisor asks before assuming.
-
-For the slash commands, add a `## Research stack` block to your `CLAUDE.md`:
-
-```markdown
-## Research stack (used by /todofig, /sync, /cropfig)
-
-- **Deck export dir:** figures/captured/
-- **Outline file:** outline.md
-- **Figure count:** 8
-- **Result pattern:** `^### Result (\d+)`
-- **Report language:** English
-- **Report output dir:** ./todofig_reports/
-- **Sync report dir:** ./sync_reports/
-```
-
-Or just run `/todofig` once and it'll prompt for these fields, then offer to persist them automatically.
 
 Full walkthrough: [`wiki/Getting-Started.md`](wiki/Getting-Started.md)
 

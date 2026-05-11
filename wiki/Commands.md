@@ -1,6 +1,94 @@
 # Commands — reference
 
-OMCR ships 2 slash commands and 2 invocable skills, all parameterized via the [Research stack block](Configuration.md) in your project's `CLAUDE.md`.
+OMCR ships 3 slash commands and 2 invocable skills, all parameterized via the [Project context + Research stack blocks](Configuration.md) in your project's `CLAUDE.md`.
+
+## `/setup`
+
+**Goal:** First-run project initialization. Interactively populate `CLAUDE.md`'s `## Project context` + `## Research stack` blocks, scaffold per-agent memory directories for all 6 agents, and (optionally) overlay a domain preset from `examples/<field>/`. Safe to re-run.
+
+**Argument:** `$ARGUMENTS` — optional preset hint:
+- `minimal` / `no-overlay` — skip the preset-overlay prompt entirely
+- `neuro-fmri` — pre-select the neuro-fMRI preset (still confirms before applying)
+- (empty) — ask interactively
+
+**What it asks (interview phases):**
+
+| Phase | Field type | Behavior on "skip" |
+|---|---|---|
+| Project context — scientific identity | hypothesis / venue / topic / datasets / spine | Push back **once** with the reason it matters; if user still skips, store as `[TBD: <one-line note>]`. **Never invent.** |
+| Research stack — infrastructure | paths / patterns / counts / language / BibTeX file / Summary file / CrossRef email | Propose a sensible default; accept silently if user types `[skip]`. |
+| Preset overlay | apply `neuro-fmri` or stay field-neutral | Skip allowed, no push-back |
+
+**What it writes:**
+1. The `## Project context`, `## Research stack`, and `## Language preference` blocks in `CLAUDE.md` — preserving any pre-existing content elsewhere in the file.
+2. `.claude/agent-memory/<agent>/MEMORY.md` for all 6 agents — from the preset if selected, otherwise from `templates/MEMORY.template.md`. Existing memory files are **never overwritten**.
+3. Empty `references.bib` and `references.csv` (with canonical header row) if the bibliography paths are configured. Existing files are **never overwritten**.
+
+**Output:** A summary block listing what was created / updated / skipped, with explicit follow-up items for every `[TBD: ...]` placeholder.
+
+[Source: `commands/setup.md`](../commands/setup.md)
+
+### Example session
+
+```
+/setup
+```
+
+The command reads your current `CLAUDE.md` state, then asks only for missing fields:
+
+```
+Found CLAUDE.md with `## Project context` (5 fields) but no `## Research stack`.
+Skipping to Research stack interview...
+
+Deck export dir [default: figures/captured/]:
+> [enter — accept default]
+
+Outline file [default: outline.md]:
+> manuscripts/outline.md
+
+Figure count [default: 8]:
+> 6
+
+BibTeX file [default: references.bib]:
+> [enter]
+
+Summary file [default: references.csv]:
+> [enter]
+
+CrossRef email (optional, for verify-citation polite pool):
+> me@example.edu
+
+Apply a domain preset? (neuro-fmri / none) [default: none]:
+> neuro-fmri
+
+About to write the following to CLAUDE.md:
+[shows diff]
+
+Confirm? (y/n) > y
+
+✓ Wrote ## Research stack to CLAUDE.md
+✓ Scaffolded 6 agent memory files from examples/neuro-fmri/
+✓ Created references.bib (empty, with comment header)
+✓ Created references.csv (header row only)
+✓ Setup complete — run `@supervisor where are we?` to start
+```
+
+If the user skips a scientific field:
+
+```
+Central hypothesis (one sentence):
+> skip
+
+→ "Without a hypothesis, @supervisor will ask every conversation. A rough one-sentence stake is far better than [TBD] — refine later. Want to give it a shot?"
+
+> still skip
+
+Saved as: [TBD: revisit after pilot]
+```
+
+### Re-running `/setup`
+
+Safe. Existing values are surfaced as defaults; existing MEMORY.md / references.bib / references.csv are never overwritten. If you want to reset an agent's memory, delete the specific `.claude/agent-memory/<agent>/MEMORY.md` and re-run `/setup`.
 
 ## `/todofig`
 

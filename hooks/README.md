@@ -1,18 +1,19 @@
 # `hooks/` — research-flavored Claude Code hooks
 
-This directory ships three lightweight shell-script hooks (no Node, no MCP, no plugin runtime — just `bash` + `python3`). They're wired into the plugin via `hooks/hooks.json`, which `.claude-plugin/plugin.json` references via the `"hooks"` field.
+This directory ships four lightweight shell-script hooks (no Node, no MCP, no plugin runtime — just `bash` + `python3`). They're wired into the plugin via `hooks/hooks.json`, which `.claude-plugin/plugin.json` references via the `"hooks"` field.
 
 | Hook | Event | Behavior | Blocking? |
 |---|---|---|---|
 | [pii-scrub.sh](pii-scrub.sh) | `PreToolUse:Write\|Edit` | Greps staged content against a pattern list (default: emails / SSNs / 6-digit subject IDs). | **Blocks** (exit 2) on match. |
 | [memory-load.sh](memory-load.sh) | `SessionStart` | Reads `.claude/agent-memory/<agent>/MEMORY.md` from the project root and emits to stdout for context injection. | Never blocks. |
+| [setup-nudge.sh](setup-nudge.sh) | `SessionStart` | If `CLAUDE.md` is missing `## Project context` or `## Research stack`, prints a one-line reminder to run `/setup`. | Never blocks. |
 | [citation-warn.sh](citation-warn.sh) | `PostToolUse:Write\|Edit` | When the edited file looks like manuscript markdown (`paper/`, `manuscript/`, `drafts/`, or `*draft*.md`), warns about paragraphs missing any citation form. | Never blocks (heuristic only). |
 
 ## How they hang together
 
-A typical research session uses all three:
+A typical research session uses all four:
 
-1. **Session starts** → `memory-load.sh` injects each agent's `MEMORY.md` into the context, so `@supervisor`, `@analysis-implementer`, etc. all begin with their persistent state from prior conversations.
+1. **Session starts** → `memory-load.sh` injects each agent's `MEMORY.md` into the context, so `@supervisor`, `@analysis-implementer`, etc. all begin with their persistent state from prior conversations. In parallel, `setup-nudge.sh` checks whether `CLAUDE.md` is initialized; if not, it prints a one-line `/setup` reminder. Once the project is initialized, this hook goes silent automatically.
 2. **You ask the agent to write something** → `pii-scrub.sh` checks the staged content for sensitive patterns *before* the file is touched. Block on match, with a stderr message naming the matched pattern(s).
 3. **The write succeeds** → if it looks like manuscript markdown, `citation-warn.sh` flags paragraphs without `[text](url)` or `(Author YYYY)` citations. Just a nudge — does not block.
 
@@ -56,6 +57,7 @@ Each hook honors a `CLAUDE_RESEARCH_DISABLE_<NAME>=1` env var:
 |---|---|
 | `CLAUDE_RESEARCH_DISABLE_PII_SCRUB=1` | `pii-scrub.sh` (Write/Edit always pass) |
 | `CLAUDE_RESEARCH_DISABLE_MEMORY_LOAD=1` | `memory-load.sh` (no MEMORY.md injection) |
+| `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1` | `setup-nudge.sh` (no `/setup` reminder on uninitialized projects) |
 | `CLAUDE_RESEARCH_DISABLE_CITATION_WARN=1` | `citation-warn.sh` (no manuscript warnings) |
 
 Set in `.claude/settings.json` `env` block (project) or shell environment (session). The hook script exits 0 immediately when the corresponding var is `1`.
@@ -82,6 +84,13 @@ echo '{"tool_input":{"file_path":"a.md","content":"hello world"}}' | bash hooks/
 
 # memory-load no-ops cleanly when no .claude/agent-memory exists
 bash hooks/memory-load.sh; echo "exit=$?"
+
+# setup-nudge prints reminder for an uninitialized project
+(cd $(mktemp -d) && bash $OLDPWD/hooks/setup-nudge.sh); echo "exit=$?"
+
+# setup-nudge stays silent for a fully-initialized project
+tmp=$(mktemp -d); printf '## Project context\nhi\n\n## Research stack\nbye\n' > $tmp/CLAUDE.md
+(cd $tmp && bash $OLDPWD/hooks/setup-nudge.sh); echo "exit=$?"   # expect empty output, exit 0
 
 # citation-warn ignores non-manuscript files
 echo '{"tool_input":{"file_path":"src/foo.md","content":"a paragraph long enough to trigger the heuristic but in src/, so this should pass silently."}}' | bash hooks/citation-warn.sh; echo "exit=$?"

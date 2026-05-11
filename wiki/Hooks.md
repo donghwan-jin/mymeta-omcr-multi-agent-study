@@ -1,6 +1,6 @@
 # Hooks — reference
 
-OMCR ships 3 shell-script hooks under `hooks/`, registered via `hooks/hooks.json`. They run automatically once the plugin is loaded. All three are written in plain `bash` + `python3` — no Node, no MCP, no external runtime.
+OMCR ships 4 shell-script hooks under `hooks/`, registered via `hooks/hooks.json`. They run automatically once the plugin is loaded. All four are written in plain `bash` + `python3` — no Node, no MCP, no external runtime.
 
 ## `pii-scrub.sh` — block writes containing PII
 
@@ -95,15 +95,44 @@ echo '{"tool_input":{"file_path":"src/foo.md","content":"long paragraph in src/,
 
 [Source: `hooks/citation-warn.sh`](../hooks/citation-warn.sh)
 
+## `setup-nudge.sh` — prompt `/setup` if the project is uninitialized
+
+**Event:** `SessionStart` (runs once when Claude Code opens a new session, alongside `memory-load.sh`)
+
+**Behavior:** Checks the project root for `CLAUDE.md` and whether it contains the `## Project context` and `## Research stack` blocks. If either is missing, prints a one-line non-blocking nudge suggesting `/setup`. Always exits 0 — never blocks.
+
+**No-op when:**
+- The project is fully initialized (both blocks present).
+- The cwd is the OMCR plugin's own checkout (detected via `.claude-plugin/plugin.json` presence) — so the maintainer doesn't get nudged when editing OMCR itself.
+- `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1` is set.
+
+**Disable per-project:** `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1`.
+
+**Test:**
+```bash
+# Missing CLAUDE.md → nudge
+cd /tmp/empty && bash $PLUGIN_ROOT/hooks/setup-nudge.sh
+
+# Fully initialized (both blocks present) → silent
+cd /your/project && bash $PLUGIN_ROOT/hooks/setup-nudge.sh
+```
+
+**Why this exists:** The agents and commands all depend on the `## Project context` + `## Research stack` blocks for hypothesis / venue / paths / BibTeX / etc. Without an explicit prompt, a new user could load the plugin, type `@supervisor`, and watch every agent ask the same setup questions session after session. The nudge surfaces `/setup` once per session until the project is initialized — then goes silent.
+
+[Source: `hooks/setup-nudge.sh`](../hooks/setup-nudge.sh)
+
 ## Hook registration
 
-The plugin's `.claude-plugin/plugin.json` points to `hooks/hooks.json`, which registers the three scripts to their events:
+The plugin's `.claude-plugin/plugin.json` points to `hooks/hooks.json`, which registers the four scripts to their events. Both `SessionStart` hooks (`memory-load`, `setup-nudge`) run on every session start; their outputs are concatenated:
 
 ```json
 {
   "hooks": {
     "PreToolUse":   [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "bash \"$CLAUDE_PLUGIN_ROOT\"/hooks/pii-scrub.sh", "timeout": 5}]}],
-    "SessionStart": [{"matcher": "*",          "hooks": [{"type": "command", "command": "bash \"$CLAUDE_PLUGIN_ROOT\"/hooks/memory-load.sh", "timeout": 5}]}],
+    "SessionStart": [{"matcher": "*",          "hooks": [
+      {"type": "command", "command": "bash \"$CLAUDE_PLUGIN_ROOT\"/hooks/memory-load.sh", "timeout": 5},
+      {"type": "command", "command": "bash \"$CLAUDE_PLUGIN_ROOT\"/hooks/setup-nudge.sh", "timeout": 5}
+    ]}],
     "PostToolUse":  [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "bash \"$CLAUDE_PLUGIN_ROOT\"/hooks/citation-warn.sh", "timeout": 5}]}]
   }
 }

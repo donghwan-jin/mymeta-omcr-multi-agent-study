@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 v0.1.x of a Claude Code plugin that ships:
 - 6 research-team agents (`agents/`)
-- 2 parameterized slash commands (`commands/`)
+- 3 parameterized slash commands (`commands/`)
 - 2 skills (`skills/cropfig/`, `skills/verify-citation/`)
-- 3 lightweight hooks (`hooks/`)
+- 4 lightweight hooks (`hooks/`)
 - a canonical memory schema (`templates/MEMORY.template.md`)
 - the plugin manifest (`.claude-plugin/plugin.json`)
 - one worked example preset (`examples/neuro-fmri/` — neuro-flavored analysis-implementer body + redacted MEMORY.md skeletons)
@@ -52,7 +52,8 @@ oh-my-claudecode-research/
 │   ├── figure-descriptor.md
 │   ├── reviewer.md
 │   └── literature-curator.md         # bibliography curator + BibTeX/summary-table owner
-├── commands/                         # 2 parameterized slash commands
+├── commands/                         # 3 parameterized slash commands
+│   ├── setup.md                      # /setup — first-run interview + agent-memory scaffolding
 │   ├── todofig.md                    # /todofig — deck-vs-outline gap analyzer
 │   └── sync.md                       # /sync — state reconciler + optional figure embed
 ├── skills/
@@ -62,11 +63,12 @@ oh-my-claudecode-research/
 │   └── verify-citation/              # CrossRef/OpenAlex existence + metadata check; updates summary CSV
 │       ├── SKILL.md
 │       └── verify_citation.py
-├── hooks/                            # 3 shell-script hooks + their config
+├── hooks/                            # 4 shell-script hooks + their config
 │   ├── hooks.json                    # event registration
 │   ├── pii-scrub.sh                  # PreToolUse:Write|Edit blocker
 │   ├── memory-load.sh                # SessionStart MEMORY.md injector
 │   ├── citation-warn.sh              # PostToolUse:Write|Edit non-blocking warner
+│   ├── setup-nudge.sh                # SessionStart nudge if CLAUDE.md is uninitialized
 │   ├── default-scrub-patterns.txt    # default PII patterns (project can override)
 │   └── README.md                     # configuration guide
 ├── examples/                         # field-specific overlays
@@ -85,7 +87,7 @@ oh-my-claudecode-research/
 │   ├── OMC-Tool-Reference.md         # 47 OMC MCP tools mapped to research stages
 │   ├── Agents.md                     # 6 agents reference
 │   ├── Commands.md                   # /todofig + /sync + cropfig reference
-│   ├── Hooks.md                      # 3 hooks reference
+│   ├── Hooks.md                      # 4 hooks reference
 │   ├── Specializing.md               # author a field-specific preset
 │   └── README.md                     # how to sync this dir to GitHub Wiki
 ├── README.md                         # public landing page (front door, links to wiki)
@@ -117,17 +119,18 @@ When editing agents, link to the template file via a relative path so users disc
 ## Harness — what's wired in
 
 The plugin manifest (`.claude-plugin/plugin.json`) declares four registries:
-- `agents: ./agents/` — 5 `@`-mentionable agents
-- `commands: ./commands/` — 2 slash commands resolved against the user's `## Research stack` block
-- `skills: ./skills/` — 1 invocable skill (`cropfig`)
-- `hooks: ./hooks/hooks.json` — 3 lifecycle hooks
+- `agents: ./agents/` — 6 `@`-mentionable agents
+- `commands: ./commands/` — 3 slash commands (`/setup` for first-run init; `/todofig` and `/sync` resolved against the user's `## Research stack` block)
+- `skills: ./skills/` — 2 invocable skills (`cropfig`, `verify-citation`)
+- `hooks: ./hooks/hooks.json` — 4 lifecycle hooks
 
-The 3 hooks wire to Claude Code events:
+The 4 hooks wire to Claude Code events:
 - `PreToolUse:Write|Edit` → `pii-scrub.sh` — blocks writes containing matched PII patterns.
 - `SessionStart` → `memory-load.sh` — concatenates `.claude/agent-memory/*/MEMORY.md` into session context.
+- `SessionStart` → `setup-nudge.sh` — non-blocking one-line nudge if `CLAUDE.md` lacks the `## Project context` or `## Research stack` blocks.
 - `PostToolUse:Write|Edit` → `citation-warn.sh` — heuristic warning for manuscript markdown with uncited paragraphs.
 
-All three honor `CLAUDE_RESEARCH_DISABLE_<NAME>=1` env vars for per-project disabling. See [`hooks/README.md`](hooks/README.md) for the full configuration guide and how to extend.
+All four honor `CLAUDE_RESEARCH_DISABLE_<NAME>=1` env vars for per-project disabling. See [`hooks/README.md`](hooks/README.md) for the full configuration guide and how to extend.
 
 The commands + skill read three layers (in priority order): env vars → user CLAUDE.md `## Research stack` block → hardcoded defaults. First-run pattern: if the block is missing, the command asks the user once and offers to persist it to CLAUDE.md. See [`wiki/Configuration.md`](wiki/Configuration.md) for the field reference.
 

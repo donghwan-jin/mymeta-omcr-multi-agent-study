@@ -17,7 +17,7 @@ If you also have OMC installed (or want to install it), see [With OMC](With-OMC.
 | 5 `@`-mentionable agents | Full personas, English-by-default, configurable language |
 | `/todofig` and `/sync` commands | Parameterized via `## Research stack` block in your CLAUDE.md |
 | `cropfig` skill | Tight-crops captioned PNGs (Python + PIL + numpy) |
-| 3 hooks | PII guard + MEMORY auto-load + citation warning |
+| 4 hooks | PII guard + MEMORY auto-load + citation warning + setup nudge |
 | `templates/MEMORY.template.md` | Canonical schema for per-agent memory |
 | `examples/neuro-fmri/` | Overlay preset if you do neuroimaging (fMRI / EEG / MEG) work |
 

@@ -1,6 +1,6 @@
 # oh-my-claudecode-research — Wiki
 
-A small Claude Code plugin that ships a **6-agent research team** + **3 lightweight hooks** + **2 parameterized commands** + **2 skills**, all tailored for producing research papers (or any structured-figure-and-outline document).
+A small Claude Code plugin that ships a **6-agent research team** + **4 lightweight hooks** + **3 parameterized commands** + **2 skills**, all tailored for producing research papers (or any structured-figure-and-outline document).
 
 This wiki is the documentation deep dive. The [README](../README.md) is the quick overview.
 
@@ -45,8 +45,8 @@ OMCR is a **research-team persona pack**. It does not orchestrate analyses, run 
 - `@literature-curator` — BibTeX + summary-table owner; resolves `[CITE: ...]` placeholders and verifies every citation against CrossRef/OpenAlex
 
 Plus the harness:
-- 3 hooks (PII guard, MEMORY auto-load, citation warning)
-- 2 slash commands (`/todofig` and `/sync`) for figure-deck-vs-outline workflows
+- 4 hooks (PII guard, MEMORY auto-load, citation warning, setup nudge)
+- 3 slash commands (`/setup` for first-run init; `/todofig` and `/sync` for figure-deck-vs-outline workflows)
 - 2 skills (`cropfig` for stripping caption bands from exported figure PNGs; `verify-citation` for gating every citation added to the bibliography)
 
 ## What OMCR is NOT
