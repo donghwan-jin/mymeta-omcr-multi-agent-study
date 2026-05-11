@@ -107,7 +107,7 @@ Full walkthrough: [`wiki/Getting-Started.md`](wiki/Getting-Started.md)
 
 Core agents and commands are field-neutral. For domain-specific flavor (e.g., neuroscience methodology, wet-lab conventions, ML evaluation idioms), overlay a preset from `examples/<field>/`. Currently shipped:
 
-- **[`examples/neuro-fmri/`](examples/neuro-fmri/)** — Mapper-on-fMRI specialization. Provides a neuro-flavored `analysis-implementer` body + redacted MEMORY.md skeletons for all 5 agents.
+- **[`examples/neuro-fmri/`](examples/neuro-fmri/)** — generic neuro-fMRI specialization. Provides a neuro-flavored `analysis-implementer` body (preprocessing / parcellation / connectivity / ISC / spin tests) + redacted MEMORY.md skeletons for all 5 agents.
 
 Quick overlay:
 

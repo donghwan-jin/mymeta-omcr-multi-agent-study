@@ -66,7 +66,7 @@ oh-my-claudecode-research/
 │   ├── default-scrub-patterns.txt    # default PII patterns (project can override)
 │   └── README.md                     # configuration guide
 ├── examples/                         # field-specific overlays
-│   └── neuro-fmri/                   # worked specialization for Mapper-on-fMRI studies
+│   └── neuro-fmri/                   # worked specialization for neuroimaging studies (fMRI preprocessing / parcellation / connectivity / ISC)
 │       ├── agents/                   # neuro-flavored analysis-implementer body
 │       ├── memory-templates/         # 5 redacted MEMORY.md skeletons
 │       └── README.md                 # how to overlay + author-your-own guide

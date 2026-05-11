@@ -1,13 +1,13 @@
 # Specializing for Your Field
 
-OMCR's 5 core agents are field-neutral. To make them concrete for your domain, author a **preset** under `examples/<field>/`. The shipped example is `examples/neuro-fmri/` (Mapper-on-fMRI). This page walks through authoring your own.
+OMCR's 5 core agents are field-neutral. To make them concrete for your domain, author a **preset** under `examples/<field>/`. The shipped example is `examples/neuro-fmri/` (generic neuroimaging — preprocessing, parcellation, connectivity, ISC, statistical conventions). This page walks through authoring your own.
 
 ## When you need a preset
 
 You probably need a preset if any of these are true:
 
 - Your field has specific libraries / atlases / databases that `@analysis-implementer` should know about by default (e.g., `nilearn` for fMRI, `Biopython` for genomics, `astropy` for astronomy).
-- Your field has venue-specific conventions for figures (e.g., neuroscience figures use the Schaefer atlas color scheme; particle physics has specific plot types).
+- Your field has venue-specific conventions for figures (e.g., neuroscience figures use specific atlas color schemes; particle physics has specific plot types).
 - Your field has typical reviewer attacks `@reviewer` should be primed for (e.g., "are you sure this isn't a confound from X?").
 - Your project's memory files would benefit from field-specific scaffolds (e.g., a neuro project tracks atlas choice, scrubbing thresholds; a wet-lab project tracks PCR conditions, antibody lot numbers).
 
@@ -110,16 +110,16 @@ PRs adding new presets are welcome on the main repo. Quality bar:
 
 The neuro-fmri preset overlays only `analysis-implementer` because:
 - `supervisor`, `paper-writer`, `figure-descriptor`, `reviewer` work as-is with placeholder fills via project CLAUDE.md
-- `analysis-implementer`'s neuro-flavored body adds: nilearn / kepler-mapper / Schaefer parcellation expertise, fMRI preprocessing pitfalls (TR / scrubbing / confound regression), Mapper-specific debugging patterns, MATLAB-Python interop conventions
+- `analysis-implementer`'s neuro-flavored body adds: nilearn / nibabel / parcellation expertise (Schaefer / Gordon / AAL / HCP-MMP), fMRI preprocessing pitfalls (TR / scrubbing / confound regression), ISC, spin tests, MATLAB-Python interop conventions
 
-It also ships redacted memory skeletons for all 5 agents because each agent in a Mapper-on-fMRI project tracks a distinctive set of state:
+It also ships redacted memory skeletons for all 5 agents because each agent in a neuroimaging project tracks a distinctive set of state:
 - `supervisor/MEMORY.md` — hypothesis log, literature anchors, narrative spine evolution
-- `analysis-implementer/MEMORY.md` — Mapper hyperparameters, subject exclusions, pipeline state
-- `paper-writer/MEMORY.md` — section status, nomenclature decisions (intrinsic scaffold vs. manifold), venue requirements
+- `analysis-implementer/MEMORY.md` — pipeline hyperparameters, subject exclusions, pipeline state
+- `paper-writer/MEMORY.md` — section status, nomenclature decisions, venue requirements
 - `figure-descriptor/MEMORY.md` — color system (condition → color mapping), figure list with status
-- `reviewer/MEMORY.md` — Mapper-specific attack vectors (parameter sensitivity, projection circularity), open concerns
+- `reviewer/MEMORY.md` — field-specific attack vectors (parameter sensitivity, circularity, motion confounds), open concerns
 
-The pattern transfers to other fields with substitutions: swap "Mapper" for your method, swap "fMRI" for your data modality, swap the attack vectors for the ones reviewers in your field use.
+The pattern transfers to other fields with substitutions: swap "fMRI" for your data modality, swap the attack vectors for the ones reviewers in your field use.
 
 ## See also
 

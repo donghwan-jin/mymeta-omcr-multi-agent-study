@@ -19,7 +19,7 @@ If you also have OMC installed (or want to install it), see [With OMC](With-OMC.
 | `cropfig` skill | Tight-crops captioned PNGs (Python + PIL + numpy) |
 | 3 hooks | PII guard + MEMORY auto-load + citation warning |
 | `templates/MEMORY.template.md` | Canonical schema for per-agent memory |
-| `examples/neuro-fmri/` | Overlay preset if you do Mapper-on-fMRI work |
+| `examples/neuro-fmri/` | Overlay preset if you do neuroimaging (fMRI / EEG / MEG) work |
 
 ## Canonical session — paper-writing project
 

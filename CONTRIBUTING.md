@@ -90,7 +90,7 @@ The repo's PII baseline (enforced via `hooks/default-scrub-patterns.txt` + manua
 
 - **Never commit** to any tracked file outside `LICENSE`: real subject IDs, email addresses, advisor names, institution names, target-journal names, absolute paths on a contributor's machine.
 - Domain-specific worked content (atlases, hyperparameters, dataset references) is allowed only under `examples/<field>/`.
-- The `examples/neuro-fmri/commands/*.md` files keep DoD-Agent-specific paths like `results-G1-traversal/` intentionally — the header banner explicitly tells users to adapt. Don't scrub these; they're part of the worked example.
+- The `examples/<field>/` directories are intended for **generic field-specific content** (e.g., fMRI preprocessing conventions, statistical norms) — *not* a single user's particular pipeline, hyperparameters, dataset, or hypothesis. Project-specific methodology belongs in **users' own** project `.claude/agents/` overlays, not in shipped presets.
 
 When in doubt, run an audit. Build the regex from the project's actual sensitive strings (institution / lab / advisor names, real subject-ID format, email pattern) and grep:
 

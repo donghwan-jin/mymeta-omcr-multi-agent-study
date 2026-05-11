@@ -47,7 +47,7 @@ Output:
 ### Fig 1 — Conceptual schematic
 - ✅ Pipeline overview present
 - ⚠️ Color palette differs from rest of deck
-- ❌ Step 3 ("traversal") panel missing
+- ❌ Step 3 ("group comparison") panel missing
 - **Next action:** Add Step 3 schematic; harmonize palette per color-system.md
 
 ### Fig 2 — R1 (rest scaffold)

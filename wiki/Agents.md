@@ -138,7 +138,7 @@ To use OMCR for a specific field, you can either:
 1. **Edit the core agent files** in `agents/` to add field-specific content (loses portability — your edits diverge from upstream).
 2. **Overlay a preset** from `examples/<field>/` (recommended — keeps core upgradable).
 
-Currently shipped preset: `examples/neuro-fmri/` (Mapper-on-fMRI flavor for `@analysis-implementer`). To author your own: see [Specializing](Specializing.md).
+Currently shipped preset: `examples/neuro-fmri/` (generic neuro-fMRI flavor for `@analysis-implementer` — preprocessing, parcellation, connectivity, ISC, spin tests). To author your own: see [Specializing](Specializing.md).
 
 ## See also
 
