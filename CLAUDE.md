@@ -4,7 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository status
 
-v0.1 of a Claude Code plugin that ships 5 research-team agents (`agents/`), 3 lightweight hooks (`hooks/`), one worked example preset (`examples/neuro-fmri/`), a canonical memory schema (`templates/MEMORY.template.md`), and the manifest (`.claude-plugin/plugin.json`). MIT licensed (`LICENSE`, 2026 Young-Eun Lee). No build chain, no npm — plain markdown plus shell scripts loaded directly by Claude Code.
+v0.1.x of a Claude Code plugin that ships:
+- 5 research-team agents (`agents/`)
+- 2 parameterized slash commands (`commands/`)
+- 1 figure-cropping skill (`skills/cropfig/`)
+- 3 lightweight hooks (`hooks/`)
+- a canonical memory schema (`templates/MEMORY.template.md`)
+- the plugin manifest (`.claude-plugin/plugin.json`)
+- one worked example preset (`examples/neuro-fmri/` — neuro-flavored analysis-implementer body + redacted MEMORY.md skeletons)
+- wiki documentation (`wiki/`) — 11 markdown pages, mirrors to GitHub Wiki via `wiki/README.md` instructions
+
+MIT licensed (`LICENSE`, 2026 Young-Eun Lee). No build chain, no npm — plain markdown plus shell scripts loaded directly by Claude Code.
 
 ## Project intent
 
@@ -33,13 +43,21 @@ Rules that apply to **all** symlinks in this section:
 
 ```
 oh-my-claudecode-research/
-├── .claude-plugin/plugin.json        # marketplace-compatible manifest (name/version/agents/hooks/...)
+├── .claude-plugin/plugin.json        # plugin manifest (registers agents/commands/skills/hooks)
+├── .gitattributes                    # LF line-ending normalization
 ├── agents/                           # 5 generic core agents (kebab-case, frontmatter required)
 │   ├── supervisor.md
 │   ├── analysis-implementer.md
 │   ├── paper-writer.md
 │   ├── figure-descriptor.md
 │   └── reviewer.md
+├── commands/                         # 2 parameterized slash commands
+│   ├── todofig.md                    # /todofig — deck-vs-outline gap analyzer
+│   └── sync.md                       # /sync — state reconciler + optional figure embed
+├── skills/
+│   └── cropfig/                      # generic figure-only crop (env-var + CLAUDE.md driven)
+│       ├── SKILL.md
+│       └── crop_top_label.py
 ├── hooks/                            # 3 shell-script hooks + their config
 │   ├── hooks.json                    # event registration
 │   ├── pii-scrub.sh                  # PreToolUse:Write|Edit blocker
@@ -49,18 +67,30 @@ oh-my-claudecode-research/
 │   └── README.md                     # configuration guide
 ├── examples/                         # field-specific overlays
 │   └── neuro-fmri/                   # worked specialization for Mapper-on-fMRI studies
-│       ├── agents/                   # neuro-flavored analysis-implementer
-│       ├── commands/                 # /todofig, /sync (Keynote → docx workflow)
-│       ├── skills/cropfig/           # tight-crop captioned PNGs to figure-only
+│       ├── agents/                   # neuro-flavored analysis-implementer body
 │       ├── memory-templates/         # 5 redacted MEMORY.md skeletons
 │       └── README.md                 # how to overlay + author-your-own guide
 ├── templates/
 │   └── MEMORY.template.md            # canonical empty MEMORY.md schema
-├── README.md                         # public landing page
+├── wiki/                             # 11-page documentation deep dive (browse here or push to GitHub Wiki)
+│   ├── Home.md                       # navigation hub
+│   ├── Getting-Started.md            # install + first session
+│   ├── Standalone-Usage.md           # OMCR alone walkthrough
+│   ├── With-OMC.md                   # OMCR + OMC companion install
+│   ├── Configuration.md              # ## Research stack block reference + env vars
+│   ├── OMC-Tool-Reference.md         # 47 OMC MCP tools mapped to research stages
+│   ├── Agents.md                     # 5 agents reference
+│   ├── Commands.md                   # /todofig + /sync + cropfig reference
+│   ├── Hooks.md                      # 3 hooks reference
+│   ├── Specializing.md               # author a field-specific preset
+│   └── README.md                     # how to sync this dir to GitHub Wiki
+├── README.md                         # public landing page (front door, links to wiki)
 ├── CLAUDE.md                         # this file
 ├── CONTRIBUTING.md                   # contributor guide
 └── LICENSE                           # MIT
 ```
+
+`commands/`, `skills/`, and `hooks/` were originally drafted under `examples/neuro-fmri/` in v0.1.0 and promoted to the core in v0.1.1, rewritten as parameter-driven generics that resolve config from the user's project CLAUDE.md `## Research stack` block.
 
 ## Conventions to enforce when editing
 
@@ -82,13 +112,20 @@ When editing agents, link to the template file via a relative path so users disc
 
 ## Harness — what's wired in
 
-The plugin manifest (`.claude-plugin/plugin.json`) registers `hooks/hooks.json`, which wires three shell scripts to three Claude Code events:
+The plugin manifest (`.claude-plugin/plugin.json`) declares four registries:
+- `agents: ./agents/` — 5 `@`-mentionable agents
+- `commands: ./commands/` — 2 slash commands resolved against the user's `## Research stack` block
+- `skills: ./skills/` — 1 invocable skill (`cropfig`)
+- `hooks: ./hooks/hooks.json` — 3 lifecycle hooks
 
+The 3 hooks wire to Claude Code events:
 - `PreToolUse:Write|Edit` → `pii-scrub.sh` — blocks writes containing matched PII patterns.
 - `SessionStart` → `memory-load.sh` — concatenates `.claude/agent-memory/*/MEMORY.md` into session context.
 - `PostToolUse:Write|Edit` → `citation-warn.sh` — heuristic warning for manuscript markdown with uncited paragraphs.
 
 All three honor `CLAUDE_RESEARCH_DISABLE_<NAME>=1` env vars for per-project disabling. See [`hooks/README.md`](hooks/README.md) for the full configuration guide and how to extend.
+
+The commands + skill read three layers (in priority order): env vars → user CLAUDE.md `## Research stack` block → hardcoded defaults. First-run pattern: if the block is missing, the command asks the user once and offers to persist it to CLAUDE.md. See [`wiki/Configuration.md`](wiki/Configuration.md) for the field reference.
 
 ## Language directive
 
