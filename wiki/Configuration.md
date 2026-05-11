@@ -15,9 +15,9 @@ Add a `## Research stack` section to your project's `CLAUDE.md`. The slash comma
 ```markdown
 ## Research stack (used by /todofig, /sync, /cropfig)
 
-- **Deck file:** decks/main.key  (optional — `.key` or `.pptx`; takes precedence over `Deck export script`)
-- **Deck export dir:** figures/captured/
-- **Tight-crop output dir:** figures/tight/
+- **Deck file:** decks/main.key  (`.key` or `.pptx`; required by `cropfig`)
+- **Figure PDF dir:** figures/pdf/   (cropped vector PDFs — manuscript artifact)
+- **Figure PNG dir:** figures/png/   (cropped raster PNGs — outline artifact)
 - **Outline file:** outline.md
 - **Figure count:** 8
 - **Result pattern:** `^### Result (\d+)`
@@ -25,7 +25,6 @@ Add a `## Research stack` section to your project's `CLAUDE.md`. The slash comma
 - **Report language:** English
 - **Report output dir:** ./todofig_reports/
 - **Sync report dir:** ./sync_reports/
-- **Deck export script:** bash export.sh  (optional — used only when `Deck file` is unset)
 - **Embed target:** outline.docx  (optional — for /sync Phase 4)
 ```
 
@@ -33,7 +32,8 @@ Add a `## Research stack` section to your project's `CLAUDE.md`. The slash comma
 
 | Field | Used by | Type | Default | Purpose |
 |---|---|---|---|---|
-| `Deck export dir` | `/todofig`, `/sync`, `cropfig` | path | `figures/captured/` | Captured figure PNGs (input). Your slide-export pipeline writes here. Read-only by OMCR. |
+| `Deck file` | `cropfig` Step 1 | path | (optional) | Path to a `.key` or `.pptx` deck. When set, `cropfig` runs `export_deck.py` to populate `Deck export dir` before cropping. Wins over `Deck export script` if both are set. |
+| `Deck export dir` | `/todofig`, `/sync`, `cropfig` | path | `figures/captured/` | Captured figure PNGs (input). Either produced by Step 1 (from `Deck file` / `Deck export script`) or written by your own slide-export pipeline. Read-only during the crop step. |
 | `Tight-crop output dir` | `cropfig`, `/sync` Phase 4 | path | `figures/tight/` | Header-stripped figure-only PNGs. Owned by `cropfig`; rewritten each invocation. |
 | `Outline file` | `/todofig`, `/sync` | path | (required) | Markdown outline describing intended figure contents. |
 | `Figure count` | `/todofig`, `/sync` | integer | (required) | Total figures expected in the project. Used for the status table loop. |
@@ -42,8 +42,13 @@ Add a `## Research stack` section to your project's `CLAUDE.md`. The slash comma
 | `Report language` | `/todofig`, `/sync` | string | `English` | Output language for the human-readable report. Manuscript content always stays English. |
 | `Report output dir` | `/todofig` | path | `./todofig_reports/` | Where `/todofig` saves its dated TODO report. |
 | `Sync report dir` | `/sync` | path | `./sync_reports/` | Where `/sync` saves its dated status snapshot. |
-| `Deck export script` | `/todofig`, `/sync`, `cropfig` | shell command | (optional) | Idempotent command to refresh the deck export. Skipped if not set. |
+| `Deck export script` | `/todofig`, `/sync`, `cropfig` | shell command | (optional) | Idempotent command to refresh `Deck export dir`. Used only when `Deck file` is unset; skipped if neither is set. |
 | `Embed target` | `/sync` Phase 4 | path | (optional) | Document (`.docx` / `.md`) into which cropped figures are embedded at each result heading. Phase 4 skipped if not set. |
+| `Manuscript dir` | `/setup`, `@paper-writer` | path | `paper/` | Directory holding the LaTeX manuscript (`main.tex`, `sections/`, `references.bib`, `figures/`). Initialized by `/setup` from [`templates/manuscript-skeleton/`](../templates/manuscript-skeleton/). |
+| `BibTeX file` | `@literature-curator`, `verify-citation` | path | `<Manuscript dir>/references.bib` | Canonical BibTeX file. Defaults inside the manuscript dir so it gets pushed to Overleaf when configured. |
+| `Summary file` | `@literature-curator`, `verify-citation` | path | `references.csv` (project root) | Human-readable literature summary table. Lives **outside** the manuscript dir on purpose — it's project metadata, not part of the paper. |
+| `CrossRef email` | `verify-citation` | email | (optional) | Polite-pool identifier for CrossRef. Recommended — higher rate limit and priority on the public API. Not used to send any mail. |
+| `Overleaf git URL` | `/setup` | URL | (optional) | If set, `/setup` clones the Overleaf project into `Manuscript dir` and scaffolds the skeleton there. Requires Overleaf paid plan with Git Integration. Authentication token is cached only in git's credential helper or `~/.netrc` — never written to CLAUDE.md or any tracked file. |
 
 ### First-run wizard
 
@@ -62,6 +67,7 @@ Use environment variables to override layer 2 for a single invocation or to pass
 
 | Variable | Used by | Maps to layer 2 field |
 |---|---|---|
+| `DECK_FILE` | `cropfig` | `Deck file` |
 | `FIGURES_SRC` | `cropfig` | `Deck export dir` |
 | `FIGURES_DST` | `cropfig` | `Tight-crop output dir` |
 | `EXPORT_SCRIPT` | `cropfig` | `Deck export script` |
@@ -76,12 +82,14 @@ Example `.claude/settings.json` snippet:
 ```json
 {
   "env": {
+    "DECK_FILE": "decks/main.key",
     "FIGURES_SRC": "results/figures_v3/captured/",
-    "FIGURES_DST": "results/figures_v3/tight/",
-    "EXPORT_SCRIPT": "bash scripts/export_keynote.sh"
+    "FIGURES_DST": "results/figures_v3/tight/"
   }
 }
 ```
+
+Set `DECK_FILE` to a `.key` or `.pptx` path and `cropfig` will run `export_deck.py` automatically; omit it and set `EXPORT_SCRIPT` instead if you already have your own export pipeline.
 
 ## PII scrub patterns
 

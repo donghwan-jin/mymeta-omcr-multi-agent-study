@@ -86,6 +86,41 @@ Central hypothesis (one sentence):
 Saved as: [TBD: revisit after pilot]
 ```
 
+### Manuscript scaffold
+
+`/setup` initializes the LaTeX manuscript at `<Manuscript dir>` (default `paper/`) from [`templates/manuscript-skeleton/`](../templates/manuscript-skeleton/):
+
+- `main.tex` with section includes
+- `sections/{abstract,introduction,methods,results,discussion}.tex` stubs
+- `figures/` placeholder directory
+- `references.bib` (empty — managed by `@literature-curator`)
+- `.gitignore` for LaTeX build artifacts
+
+Existing manuscript content is **never overwritten**: if `Manuscript dir` has files already, `/setup` stops and asks.
+
+### Journal template lookup
+
+If `Target venue` was filled during the interview, `/setup` looks it up against [`templates/journal-registry.json`](../templates/journal-registry.json) — a curated registry of ~27 high-impact venues mapped to their **CTAN-distributed LaTeX classes** (revtex / aastex / elsarticle / IEEEtran / acmart / sn-jnl / mnras / amscls). On match (case-insensitive exact, no fuzzy), the command shows the registry entry and asks confirmation before rewriting `main.tex`'s `\documentclass{...}` line.
+
+Safety guarantees on the registry:
+- OMCR ships **pointers only** — CTAN package names + `documentclass` strings + publisher guideline URLs. The `.cls` files themselves are NEVER bundled (legal: avoids redistributing publisher-licensed material; security: TeX Live verifies CTAN package signatures).
+- Each entry carries a `verified_on` timestamp; the command always reminds the user to check the current publisher guidelines URL before submission.
+- No fuzzy matching — "PRX" matches "Physical Review X" only because it's a registered alias.
+
+For venues not in the registry, `/setup` offers three options: keep the generic `article` class, specify a class name yourself (e.g. `cvpr_2024` — you supply the `.cls`), or paste a publisher URL for `/setup` to fetch with hash display before applying.
+
+### Overleaf integration (optional)
+
+If `Overleaf git URL` is set, `/setup` clones the user's Overleaf project into `Manuscript dir` (requires Overleaf paid plan with Git Integration). Auth flow:
+
+1. User pastes the Git URL (validated against `https://git.overleaf.com/<id>` format).
+2. User pastes their Overleaf Git authentication token (generated at Overleaf → Account Settings → Git Integration).
+3. Token cached **only** in git's credential helper or `~/.netrc`, scoped to `git.overleaf.com` — never written to CLAUDE.md / agent memory / any tracked file.
+4. `git ls-remote` verifies the URL + token work before touching anything.
+5. If the Overleaf project is non-empty, `/setup` stops and asks — does NOT clobber existing content.
+
+After scaffolding, the commit lands on the default branch (typically `master`) **locally**. `/setup` explicitly asks before pushing — default answer is "no" if the user just hits enter. The user can `git -C <manuscript_dir> push origin <default_branch>` later when ready.
+
 ### Re-running `/setup`
 
 Safe. Existing values are surfaced as defaults; existing MEMORY.md / references.bib / references.csv are never overwritten. If you want to reset an agent's memory, delete the specific `.claude/agent-memory/<agent>/MEMORY.md` and re-run `/setup`.

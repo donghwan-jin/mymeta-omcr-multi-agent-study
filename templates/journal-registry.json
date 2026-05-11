@@ -1,0 +1,268 @@
+{
+  "_metadata": {
+    "schema_version": "1.0",
+    "verified_on": "2026-05-11",
+    "disclaimer": "Best-effort mapping from common venue names to publicly-distributed LaTeX classes. OMCR ships POINTERS only (CTAN package names + documentclass options) — never bundles the .cls files themselves. The submission guidelines and class internals are owned by each publisher and can change without notice. ALWAYS confirm against the current author guidelines URL before submission.",
+    "license_note": "This registry is part of oh-my-claudecode-research (MIT). Each referenced LaTeX class is independently distributed by its respective maintainer on CTAN under that maintainer's license (typically LPPL). OMCR does not redistribute any class files.",
+    "matching_policy": "Exact match against the venue name OR any of its aliases (case-insensitive). No fuzzy match. User confirmation required before /setup writes anything based on a lookup.",
+    "out_of_scope": "Venues whose classes are not on CTAN (NeurIPS / ICML / CVPR / PNAS / eLife / Frontiers / PLOS / etc.) are deliberately omitted from this MVP. Users targeting those should download the class file from the publisher and place it in the manuscript dir manually."
+  },
+  "venues": {
+    "Physical Review X": {
+      "aliases": ["PRX", "Phys. Rev. X"],
+      "ctan_package": "revtex",
+      "documentclass": "\\documentclass[prx,reprint,amsmath,amssymb,aps]{revtex4-2}",
+      "bibstyle": "apsrev4-2",
+      "publisher": "APS",
+      "submission_guidelines_url": "https://journals.aps.org/prx/authors",
+      "notes": "Switch [reprint] to [preprint,onecolumn,nofootinbib] for a draft view.",
+      "verified_on": "2026-05-11"
+    },
+    "Physical Review Letters": {
+      "aliases": ["PRL", "Phys. Rev. Lett."],
+      "ctan_package": "revtex",
+      "documentclass": "\\documentclass[prl,reprint,amsmath,amssymb,aps]{revtex4-2}",
+      "bibstyle": "apsrev4-2",
+      "publisher": "APS",
+      "submission_guidelines_url": "https://journals.aps.org/prl/authors",
+      "notes": "PRL has a strict 4-page length limit; check the current guidelines.",
+      "verified_on": "2026-05-11"
+    },
+    "Physical Review Research": {
+      "aliases": ["PRResearch", "PRR", "Phys. Rev. Research"],
+      "ctan_package": "revtex",
+      "documentclass": "\\documentclass[prresearch,reprint,amsmath,amssymb,aps]{revtex4-2}",
+      "bibstyle": "apsrev4-2",
+      "publisher": "APS",
+      "submission_guidelines_url": "https://journals.aps.org/prresearch/authors",
+      "verified_on": "2026-05-11"
+    },
+    "Physical Review A": {
+      "aliases": ["PRA", "Phys. Rev. A"],
+      "ctan_package": "revtex",
+      "documentclass": "\\documentclass[pra,reprint,amsmath,amssymb,aps]{revtex4-2}",
+      "bibstyle": "apsrev4-2",
+      "publisher": "APS",
+      "submission_guidelines_url": "https://journals.aps.org/pra/authors",
+      "verified_on": "2026-05-11"
+    },
+    "Physical Review B": {
+      "aliases": ["PRB", "Phys. Rev. B"],
+      "ctan_package": "revtex",
+      "documentclass": "\\documentclass[prb,reprint,amsmath,amssymb,aps]{revtex4-2}",
+      "bibstyle": "apsrev4-2",
+      "publisher": "APS",
+      "submission_guidelines_url": "https://journals.aps.org/prb/authors",
+      "verified_on": "2026-05-11"
+    },
+    "Physical Review D": {
+      "aliases": ["PRD", "Phys. Rev. D"],
+      "ctan_package": "revtex",
+      "documentclass": "\\documentclass[prd,reprint,amsmath,amssymb,aps]{revtex4-2}",
+      "bibstyle": "apsrev4-2",
+      "publisher": "APS",
+      "submission_guidelines_url": "https://journals.aps.org/prd/authors",
+      "verified_on": "2026-05-11"
+    },
+    "Physical Review E": {
+      "aliases": ["PRE", "Phys. Rev. E"],
+      "ctan_package": "revtex",
+      "documentclass": "\\documentclass[pre,reprint,amsmath,amssymb,aps]{revtex4-2}",
+      "bibstyle": "apsrev4-2",
+      "publisher": "APS",
+      "submission_guidelines_url": "https://journals.aps.org/pre/authors",
+      "verified_on": "2026-05-11"
+    },
+    "Astrophysical Journal": {
+      "aliases": ["ApJ", "Astrophys. J."],
+      "ctan_package": "aastex",
+      "documentclass": "\\documentclass[twocolumn]{aastex631}",
+      "bibstyle": "aasjournal",
+      "publisher": "AAS / IOP",
+      "submission_guidelines_url": "https://journals.aas.org/manuscript-preparation/",
+      "notes": "AASTeX 6.3.1 is the current AAS submission class. Same class works for ApJL, ApJS, AJ, and PSJ.",
+      "verified_on": "2026-05-11"
+    },
+    "Astrophysical Journal Letters": {
+      "aliases": ["ApJL"],
+      "ctan_package": "aastex",
+      "documentclass": "\\documentclass[twocolumn]{aastex631}",
+      "bibstyle": "aasjournal",
+      "publisher": "AAS / IOP",
+      "submission_guidelines_url": "https://journals.aas.org/manuscript-preparation/",
+      "verified_on": "2026-05-11"
+    },
+    "Astronomical Journal": {
+      "aliases": ["AJ", "Astron. J."],
+      "ctan_package": "aastex",
+      "documentclass": "\\documentclass[twocolumn]{aastex631}",
+      "bibstyle": "aasjournal",
+      "publisher": "AAS / IOP",
+      "submission_guidelines_url": "https://journals.aas.org/manuscript-preparation/",
+      "verified_on": "2026-05-11"
+    },
+    "Monthly Notices of the Royal Astronomical Society": {
+      "aliases": ["MNRAS", "Mon. Not. R. Astron. Soc."],
+      "ctan_package": "mnras",
+      "documentclass": "\\documentclass[fleqn,usenatbib]{mnras}",
+      "bibstyle": "mnras",
+      "publisher": "Royal Astronomical Society / OUP",
+      "submission_guidelines_url": "https://academic.oup.com/mnras/pages/General_Instructions",
+      "verified_on": "2026-05-11"
+    },
+    "Neuron": {
+      "aliases": [],
+      "ctan_package": "elsarticle",
+      "documentclass": "\\documentclass[review,12pt]{elsarticle}",
+      "bibstyle": "model5-names",
+      "publisher": "Cell Press / Elsevier",
+      "submission_guidelines_url": "https://www.cell.com/neuron/authors",
+      "notes": "Cell Press uses elsarticle. Set [review] for double-spaced submission; switch to [preprint] for a near-final layout.",
+      "verified_on": "2026-05-11"
+    },
+    "Cell": {
+      "aliases": [],
+      "ctan_package": "elsarticle",
+      "documentclass": "\\documentclass[review,12pt]{elsarticle}",
+      "bibstyle": "model5-names",
+      "publisher": "Cell Press / Elsevier",
+      "submission_guidelines_url": "https://www.cell.com/cell/authors",
+      "verified_on": "2026-05-11"
+    },
+    "NeuroImage": {
+      "aliases": ["Neuroimage"],
+      "ctan_package": "elsarticle",
+      "documentclass": "\\documentclass[review,12pt]{elsarticle}",
+      "bibstyle": "model5-names",
+      "publisher": "Elsevier",
+      "submission_guidelines_url": "https://www.sciencedirect.com/journal/neuroimage/publish/guide-for-authors",
+      "verified_on": "2026-05-11"
+    },
+    "Pattern Recognition": {
+      "aliases": [],
+      "ctan_package": "elsarticle",
+      "documentclass": "\\documentclass[review,12pt]{elsarticle}",
+      "bibstyle": "model5-names",
+      "publisher": "Elsevier",
+      "submission_guidelines_url": "https://www.sciencedirect.com/journal/pattern-recognition/publish/guide-for-authors",
+      "verified_on": "2026-05-11"
+    },
+    "IEEE Transactions on Pattern Analysis and Machine Intelligence": {
+      "aliases": ["TPAMI", "IEEE TPAMI", "PAMI"],
+      "ctan_package": "ieeetran",
+      "documentclass": "\\documentclass[journal]{IEEEtran}",
+      "bibstyle": "IEEEtran",
+      "publisher": "IEEE",
+      "submission_guidelines_url": "https://www.computer.org/csdl/journal/tp/author-information",
+      "notes": "[journal] for regular submissions; [conference] for conference papers using the same class.",
+      "verified_on": "2026-05-11"
+    },
+    "IEEE Transactions on Neural Networks and Learning Systems": {
+      "aliases": ["TNNLS", "IEEE TNNLS"],
+      "ctan_package": "ieeetran",
+      "documentclass": "\\documentclass[journal]{IEEEtran}",
+      "bibstyle": "IEEEtran",
+      "publisher": "IEEE",
+      "submission_guidelines_url": "https://cis.ieee.org/publications/transactions-on-neural-networks-and-learning-systems",
+      "verified_on": "2026-05-11"
+    },
+    "IEEE Transactions on Image Processing": {
+      "aliases": ["TIP", "IEEE TIP"],
+      "ctan_package": "ieeetran",
+      "documentclass": "\\documentclass[journal]{IEEEtran}",
+      "bibstyle": "IEEEtran",
+      "publisher": "IEEE",
+      "submission_guidelines_url": "https://signalprocessingsociety.org/publications-resources/ieee-transactions-image-processing/transactions-image-processing-info-authors",
+      "verified_on": "2026-05-11"
+    },
+    "ACM Transactions on Graphics": {
+      "aliases": ["TOG", "ACM TOG", "SIGGRAPH"],
+      "ctan_package": "acmart",
+      "documentclass": "\\documentclass[acmtog]{acmart}",
+      "bibstyle": "ACM-Reference-Format",
+      "publisher": "ACM",
+      "submission_guidelines_url": "https://www.acm.org/publications/proceedings-template",
+      "notes": "Use [sigconf] for SIGGRAPH conference track; [acmtog] for the journal.",
+      "verified_on": "2026-05-11"
+    },
+    "Communications of the ACM": {
+      "aliases": ["CACM"],
+      "ctan_package": "acmart",
+      "documentclass": "\\documentclass[acmsmall]{acmart}",
+      "bibstyle": "ACM-Reference-Format",
+      "publisher": "ACM",
+      "submission_guidelines_url": "https://cacm.acm.org/about-communications/author-guidelines/",
+      "verified_on": "2026-05-11"
+    },
+    "Nature Communications": {
+      "aliases": ["Nat Commun", "Nat. Commun."],
+      "ctan_package": "sn-jnl",
+      "documentclass": "\\documentclass[Numbered,sn-mathphys-num]{sn-jnl}",
+      "bibstyle": "sn-mathphys-num",
+      "publisher": "Springer Nature",
+      "submission_guidelines_url": "https://www.nature.com/ncomms/submit",
+      "notes": "Springer Nature's unified sn-jnl class covers Nature Communications, Scientific Reports, and most Springer Nature journals. Pick bibstyle based on field — sn-mathphys-num / sn-vancouver / sn-apa / etc.",
+      "verified_on": "2026-05-11"
+    },
+    "Scientific Reports": {
+      "aliases": ["Sci Rep", "Sci. Rep."],
+      "ctan_package": "sn-jnl",
+      "documentclass": "\\documentclass[Numbered,sn-vancouver]{sn-jnl}",
+      "bibstyle": "sn-vancouver",
+      "publisher": "Springer Nature",
+      "submission_guidelines_url": "https://www.nature.com/srep/author-instructions/submission-guidelines",
+      "notes": "Some older guides still reference wlscirep — sn-jnl is the current unified class.",
+      "verified_on": "2026-05-11"
+    },
+    "Nature Neuroscience": {
+      "aliases": ["Nat Neurosci", "Nat. Neurosci."],
+      "ctan_package": "sn-jnl",
+      "documentclass": "\\documentclass[Numbered,sn-nature]{sn-jnl}",
+      "bibstyle": "sn-nature",
+      "publisher": "Springer Nature",
+      "submission_guidelines_url": "https://www.nature.com/neuro/authors-and-referees",
+      "notes": "Nature journals (Nature, Nature Neuroscience, Nature Methods, etc.) commonly require Word at final submission; LaTeX is accepted at initial submission. Verify before submitting.",
+      "verified_on": "2026-05-11"
+    },
+    "Nature Methods": {
+      "aliases": ["Nat Methods", "Nat. Methods"],
+      "ctan_package": "sn-jnl",
+      "documentclass": "\\documentclass[Numbered,sn-nature]{sn-jnl}",
+      "bibstyle": "sn-nature",
+      "publisher": "Springer Nature",
+      "submission_guidelines_url": "https://www.nature.com/nmeth/submission-guidelines",
+      "verified_on": "2026-05-11"
+    },
+    "AMS journal": {
+      "aliases": ["amsart", "American Mathematical Society"],
+      "ctan_package": "amscls",
+      "documentclass": "\\documentclass{amsart}",
+      "bibstyle": "amsplain",
+      "publisher": "AMS",
+      "submission_guidelines_url": "https://www.ams.org/arc/journals/jourtex.html",
+      "notes": "Use this entry as a starting point for any AMS journal (J. Amer. Math. Soc., Trans. AMS, Proc. AMS, etc.); the specific class for a target journal is downloadable from the AMS author tools page.",
+      "verified_on": "2026-05-11"
+    },
+    "arXiv preprint": {
+      "aliases": ["arxiv", "preprint"],
+      "ctan_package": "base",
+      "documentclass": "\\documentclass[11pt,a4paper]{article}",
+      "bibstyle": "plainnat",
+      "publisher": "arXiv (preprint server)",
+      "submission_guidelines_url": "https://arxiv.org/help/submit_tex",
+      "notes": "Generic article. arXiv accepts most LaTeX classes; the simple article + plainnat combo is the safest baseline.",
+      "verified_on": "2026-05-11"
+    },
+    "bioRxiv preprint": {
+      "aliases": ["biorxiv"],
+      "ctan_package": "base",
+      "documentclass": "\\documentclass[11pt,a4paper]{article}",
+      "bibstyle": "plainnat",
+      "publisher": "bioRxiv (preprint server)",
+      "submission_guidelines_url": "https://www.biorxiv.org/content/preparing-and-submitting-your-manuscript",
+      "notes": "bioRxiv accepts PDF only at upload — the LaTeX class is whatever you compile from. Generic article works.",
+      "verified_on": "2026-05-11"
+    }
+  },
+  "not_in_registry_response": "I don't have a pre-verified entry for that venue. Three options: (a) keep the generic [article] class and adjust at submission time; (b) tell me the LaTeX class name (e.g. 'cvpr_2024') and I'll just swap the documentclass line — you supply the .cls file yourself; (c) point me at a publisher download URL and I'll WebFetch it (HTTPS only; show you the hash before applying)."
+}

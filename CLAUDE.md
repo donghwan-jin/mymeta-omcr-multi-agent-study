@@ -77,7 +77,15 @@ oh-my-claudecode-research/
 │       ├── memory-templates/         # 6 redacted MEMORY.md skeletons
 │       └── README.md                 # how to overlay + author-your-own guide
 ├── templates/
-│   └── MEMORY.template.md            # canonical empty MEMORY.md schema
+│   ├── MEMORY.template.md            # canonical empty MEMORY.md schema
+│   ├── journal-registry.json         # venue → CTAN class lookup (27 entries; CTAN packages only, no bundled .cls)
+│   └── manuscript-skeleton/          # default LaTeX scaffold copied by /setup into the user's Manuscript dir
+│       ├── main.tex                  # documentclass possibly rewritten by /setup per journal-registry
+│       ├── sections/{abstract,introduction,methods,results,discussion}.tex
+│       ├── figures/.gitkeep
+│       ├── references.bib            # empty; managed by @literature-curator post-setup
+│       ├── .gitignore                # strips LaTeX build artifacts
+│       └── README.md                 # conventions reference
 ├── wiki/                             # 11-page documentation deep dive (browse here or push to GitHub Wiki)
 │   ├── Home.md                       # navigation hub
 │   ├── Getting-Started.md            # install + first session

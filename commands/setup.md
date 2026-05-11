@@ -49,9 +49,11 @@ For each field below, present the default and ask "use this, or override?". If t
 | `Tight-crop output dir` | `figures/tight/` | `## Research stack` (optional) |
 | `Embed target` | (none) | `## Research stack` (optional) |
 | `Deck export script` | (none) | `## Research stack` (optional) |
-| `BibTeX file` | `references.bib` | `## Research stack` |
-| `Summary file` | `references.csv` | `## Research stack` |
+| `Manuscript dir` | `paper/` | `## Research stack` |
+| `BibTeX file` | `<Manuscript dir>/references.bib` (i.e. `paper/references.bib`) | `## Research stack` |
+| `Summary file` | `references.csv` (project root — kept OUT of the manuscript dir so it doesn't get pushed to Overleaf) | `## Research stack` |
 | `CrossRef email` | (none) | `## Research stack` (optional — recommend the user provide it for verify-citation polite-pool access) |
+| `Overleaf git URL` | (none) | `## Research stack` (optional — only if user has Overleaf with Git Integration enabled, which requires a paid plan) |
 | `User-dialog language` | `English` | `## Language preference` (optional) |
 | `Manuscript language` | `English` (do not let the user change this — keep manuscripts in English for venue compatibility) | `## Language preference` |
 
@@ -156,11 +158,175 @@ If the user selected `neuro-fmri` and there's an agent-body overlay (currently o
 
 ---
 
-## Step 4 — Initialize bibliography files (literature-curator)
+## Step 4 — Scaffold manuscript directory (with optional Overleaf integration)
+
+This step is **always run** unless the user explicitly opted out during the interview by setting `Manuscript dir` to an empty value.
+
+### 4a — Decide the working state
+
+Inspect the configured `Manuscript dir` (default `paper/`):
+
+| Current state | Action |
+|---|---|
+| Does not exist | Will be created in 4c/4d. |
+| Exists, empty | Will be populated in 4c/4d. |
+| Exists, has files | **Stop. Ask the user.** Do not clobber. Offer (a) pick a different `Manuscript dir`, (b) re-run after manually clearing the directory, or (c) skip manuscript scaffolding entirely. |
+| Exists, is already a git repo | Note this. Continue, but staging-branch logic in 4d must NOT clobber existing branches. |
+
+### 4b — Journal template lookup (informs `main.tex`)
+
+If the user filled `Target venue` during Step 1, look it up in `$CLAUDE_PLUGIN_ROOT/templates/journal-registry.json` before populating `main.tex`.
+
+**Matching policy:**
+- Case-insensitive **exact** match against the venue name OR any entry's `aliases` list. No fuzzy match — partial matches are treated as misses.
+- On match, **confirm with the user before applying**:
+  ```
+  Target venue "<user input>" matched: <registry name>
+    Publisher:               <publisher>
+    LaTeX class:             <ctan_package>
+    documentclass line:      <documentclass>
+    Submission guidelines:   <submission_guidelines_url>
+    Registry verified on:    <verified_on>  ← OMCR snapshot, may be stale; verify against the publisher guidelines above before submission.
+
+  Apply this class to main.tex and bibstyle to the \bibliographystyle line? (y/N)
+  ```
+- Default is **no** (skip on empty input). The user has to explicitly say yes.
+
+**On confirmation (y):**
+- In the manuscript skeleton copy, replace the `\documentclass[11pt]{article}` line in `main.tex` with the registry's `documentclass`.
+- Replace the `\bibliographystyle{plainnat}` line with `\bibliographystyle{<bibstyle>}`.
+- Print: `TeX Live note — this class requires the '<ctan_package>' package. If your TeX install does not have it, run:  tlmgr install <ctan_package>` (skip this line when `ctan_package == "base"`).
+- Append the venue + class info to the manuscript-dir's `README.md` (under a "Journal template" section) so subsequent contributors see what was applied.
+
+**On no match (or user declines):**
+- Print the registry's `not_in_registry_response` (the three-option fallback: keep generic article / specify a class name / paste a publisher URL).
+- If the user picks (b) "specify a class name": just swap the documentclass line, no .cls file fetch. User is responsible for ensuring the class is installed.
+- If the user picks (c) "paste a publisher URL": treat as advanced flow — WebFetch only if user passes an `https://` URL, show the SHA256 of the downloaded archive before extracting anything, and stop if the user does not confirm the hash. The `.cls` files extracted from the archive go into `<manuscript_dir>/`, not into the OMCR plugin repo.
+- If the user picks (a) "keep generic article" (or skips): leave the skeleton as-is.
+
+**What this step does NOT do:**
+- Never bundles `.cls` files into the OMCR plugin repo.
+- Never fetches anything without explicit user OK + hash display.
+- Never uses fuzzy matching on the venue name — a near-miss is treated as a miss.
+
+### 4c — Without Overleaf (no `Overleaf git URL` configured)
+
+1. Create `Manuscript dir` if missing.
+2. Copy the manuscript skeleton from `$CLAUDE_PLUGIN_ROOT/templates/manuscript-skeleton/` into it:
+   ```
+   <manuscript_dir>/
+     main.tex                  # documentclass line possibly customized by Step 4b
+     sections/{abstract,introduction,methods,results,discussion}.tex
+     figures/.gitkeep
+     references.bib            # empty header — managed by @literature-curator
+     .gitignore                # LaTeX build artifacts
+     README.md                 # conventions reference (+ "Journal template" section if 4b applied)
+   ```
+3. Initialize git in the manuscript dir if it isn't already a repo: `git init`.
+4. Continue to 4e for the commit + ask-before-push flow.
+
+### 4d — With Overleaf (a non-empty `Overleaf git URL` was configured)
+
+**Before doing anything, confirm with the user:**
+- Overleaf Git Integration requires a paid Overleaf plan (Personal / Pro / Group / Premium). If the user is on the free tier, this will fail. Mention this once.
+- The user must have **already created an empty project on Overleaf** (we cannot create one programmatically — that requires the browser). The Git URL comes from `Overleaf menu → Sync → Git`.
+- The user must generate a **Git authentication token** at `Overleaf → Account Settings → Git Integration → Generate Token`. The token grants access to ALL their Overleaf projects, so treat it as a secret.
+
+**Token handling — non-negotiable security rules:**
+- **NEVER** write the token into `CLAUDE.md`, the project repo, agent memory, or any tracked file.
+- **NEVER** echo the full token back to the user in the report (mask all but the last 4 chars if you reference it).
+- Recommended storage: `git credential-store` scoped to the Overleaf host only, or the user's `~/.netrc` with `git.overleaf.com` only. Ask the user which they prefer; default to git's credential helper.
+- The token value lives in the user's session input — do not persist it anywhere except the credential store the user picked.
+
+**Flow:**
+
+1. Ask the user to paste the Overleaf Git URL. Validate it matches `https://git.overleaf.com/<24-hex-id>`.
+2. Ask the user to paste their Overleaf Git authentication token (input should be treated as sensitive — do not echo full value).
+3. Cache the credential for the host so `git` can authenticate non-interactively:
+   ```bash
+   git config --global credential.https://git.overleaf.com.helper store
+   # then write a line to ~/.git-credentials:
+   #   https://git:<TOKEN>@git.overleaf.com
+   ```
+   Or, if the user preferred `~/.netrc`:
+   ```
+   machine git.overleaf.com
+     login git
+     password <TOKEN>
+   ```
+4. Verify access with a lightweight call:
+   ```bash
+   git ls-remote "$OVERLEAF_URL" HEAD
+   ```
+   If this fails: stop, show the error verbatim, ask the user to re-check the URL + token (and verify their plan includes Git Integration).
+5. Detect whether the Overleaf project is empty. Strategy: `git ls-remote "$OVERLEAF_URL"` returns no refs for a truly empty project; otherwise it returns the default branch. If the project is non-empty:
+   - Show the user what's there (branches + last commit).
+   - **Stop and ask** — do not clobber an existing Overleaf project. Offer (a) pick a different Overleaf project, (b) skip Overleaf integration, (c) manually clear the Overleaf project via the web UI and re-run.
+6. Clone the (empty) Overleaf project into `Manuscript dir`:
+   ```bash
+   git clone "$OVERLEAF_URL" "$MANUSCRIPT_DIR"
+   ```
+   (For a truly empty Overleaf project the clone will report a warning that the remote is empty — this is expected.)
+7. Detect the Overleaf project's default branch name. New Overleaf projects use `master`; some use `main`. Use `git remote show origin | grep "HEAD branch"` after the clone, or default to `master` if the remote was empty.
+8. Copy the manuscript skeleton from `$CLAUDE_PLUGIN_ROOT/templates/manuscript-skeleton/` into `Manuscript dir` (over the empty clone). The `documentclass` line in `main.tex` reflects the Step 4b journal-template choice, if any.
+9. Continue to 4e.
+
+### 4e — Commit on the default branch, then ask before pushing
+
+The safety harness here is **explicit user confirmation before any network push** — never auto-push, even when an Overleaf URL is configured. Local commits are always safe; pushing is irreversible from the user's perspective (collaborators see it immediately) and requires their OK.
+
+1. In the manuscript dir, detect the default branch:
+   ```bash
+   default_branch=$(git remote show origin 2>/dev/null | awk '/HEAD branch/ {print $NF}')
+   # if no remote (local-only, no Overleaf):
+   default_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo main)
+   ```
+   If the manuscript dir was just cloned from an empty Overleaf remote, there is no checked-out branch yet — initialize one matching the remote's `HEAD` symref, or default to `master` (Overleaf's historical default) and let the first commit create it.
+2. Make sure we are on the default branch:
+   ```bash
+   git checkout "$default_branch"
+   ```
+3. `git add .` everything in `Manuscript dir`.
+4. Commit:
+   ```bash
+   git commit -m "Scaffold manuscript via oh-my-claudecode-research /setup
+
+   - main.tex with section includes
+   - sections/{abstract,introduction,methods,results,discussion}.tex stubs
+   - figures/ (empty, .gitkeep)
+   - references.bib (empty, managed by @literature-curator)
+   - .gitignore for LaTeX artifacts
+   "
+   ```
+5. Show the user the commit summary (`git log -1 --stat`) and **ask explicitly**:
+   ```
+   Manuscript scaffold committed locally on `<default_branch>`.
+   <if Overleaf URL is configured>
+     This would push to your Overleaf project at <masked URL>.
+     Saying "yes" makes the scaffold visible in Overleaf web immediately.
+     Saying "no" keeps the commit local — you can run `git push` later when ready.
+   <else>
+     Local-only — no remote configured. (No push to perform.)
+   </if>
+
+   Push now? (y/N)
+   ```
+   Default is **no** if the user just hits enter — we err on the side of not touching the network.
+6. **Only if** the user answers `y` / `yes`:
+   ```bash
+   git push origin "$default_branch"
+   ```
+   On push failure (auth issue, non-fast-forward, etc.), show the error verbatim, leave the local commit in place, and tell the user how to retry (`git push origin <default_branch>` from `<manuscript_dir>/`).
+7. If the user answered no (or the answer was empty), record the deferred state and remind them in the final report (Step 6) of the exact command to run when ready.
+
+---
+
+## Step 5 — Initialize bibliography files (literature-curator)
 
 If a `BibTeX file` path is configured:
 - If the file does not exist, create it as an empty file with a one-line header comment: `% References for <Working title>. Managed by @literature-curator. Do not hand-edit without coordinating with the agent.`
 - If it exists, leave untouched.
+- **If the path points inside `Manuscript dir`** (the default — `paper/references.bib`), the file was already created in Step 4 from the manuscript skeleton. Verify it has the canonical header comment; if not, add it. Otherwise leave alone.
 
 If a `Summary file` path is configured:
 - If the file does not exist, create it with **only the canonical header row**:
@@ -168,10 +334,11 @@ If a `Summary file` path is configured:
   citekey,authors,year,title,venue,doi,bucket,our_use,paper_says,cited_sections,verified_on,verify_status
   ```
 - If it exists, leave untouched. Do NOT overwrite or migrate existing CSVs without an explicit user OK.
+- The default location is the **project root** (`./references.csv`), explicitly outside `Manuscript dir`, so it does not get pushed to Overleaf. The CSV is project metadata, not part of the paper.
 
 ---
 
-## Step 5 — Report
+## Step 6 — Report
 
 Produce a concise summary the user can read in 10 seconds:
 
@@ -192,9 +359,16 @@ Produce a concise summary the user can read in 10 seconds:
 - literature-curator:   created from <...>
 (or "already exists — skipped" per agent)
 
+### Manuscript scaffold
+- Manuscript dir: <path> (<created / existed empty / existed with content — skipped>)
+- Skeleton: <main.tex + 5 sections + figures/ + references.bib + .gitignore — copied / skipped>
+- Overleaf: <connected to https://git.overleaf.com/****/ / no — local only>
+- Branch: `<default_branch>` (commit `<short SHA>` — `<pushed to Overleaf / local only — push deferred>`)
+- Deferred push command (if applicable): `git -C <manuscript_dir> push origin <default_branch>`
+
 ### Bibliography
-- references.bib: <created / already exists>
-- references.csv: <created with header row / already exists>
+- references.bib (inside manuscript dir): <created / already exists>
+- references.csv (project root): <created with header row / already exists>
 
 ### TBD items needing follow-up
 - [list every field still marked [TBD], with the one-line note]
@@ -202,7 +376,11 @@ Produce a concise summary the user can read in 10 seconds:
 ### Next steps
 1. `@supervisor` to confirm hypothesis / venue / narrative spine framing
 2. `@literature-curator` to start filling the BibTeX from your first 5–10 anchor papers
-3. Run `/todofig` once you have a captured figure deck to compare against the outline
+3. `@paper-writer` to draft each section under `<manuscript_dir>/sections/`
+4. Preview locally: `cd <manuscript_dir> && latexmk -pdf main.tex`
+5. (If push was deferred) When satisfied with the scaffold:
+     `git -C <manuscript_dir> push origin <default_branch>`
+6. Run `/todofig` once you have a captured figure deck to compare against the outline
 ```
 
 End by recommending the user run `@supervisor where are we?` for the first real conversation.

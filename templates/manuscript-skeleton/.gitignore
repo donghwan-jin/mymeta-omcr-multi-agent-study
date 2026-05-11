@@ -1,0 +1,26 @@
+# LaTeX build artifacts — do not commit, do not push to Overleaf
+# (Overleaf rebuilds these on its own from the .tex sources).
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.nav
+*.snm
+*.vrb
+*.xdv
+
+# Editor / OS noise
+.DS_Store
+*.swp
+*~
+
+# Auxiliary directories
+auto/
+_minted-*/
