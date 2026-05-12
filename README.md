@@ -1,10 +1,12 @@
+English | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Tiếng Việt](README.vi.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [Türkçe](README.tr.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Italiano](README.it.md)
+
 # oh-my-claudecode-research
 
-**Multi-agent orchestration for Claude Code — the research-paper edition. Zero learning curve.**
+**Multi-agent orchestration for Claude Code — the research edition. Zero learning curve.**
 
-_Don't learn paper-writing tooling. Just use OMCR._
+_Don't learn research tooling. Just use OMCR._
 
-OMCR is the research-tailored sibling of [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode). Where OMC orchestrates general code work with execution engines (`ralph`, `team`, `autopilot`, `ultraqa`, `ultrawork`), OMCR orchestrates the *paper-writing lifecycle* with **6 domain-specific engines** — `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand`, and the autonomous `/supervisor-drive`. Use either alone, or compose them: OMCR engines run inside OMC's generic loops for retries (`/ralph`), parallelism (`/team`, `/ultrawork`), multi-strategy exploration (`/ultraqa`), or budget-tracked drives (`/autopilot`). See [`wiki/Orchestration-Comparison.md`](wiki/Orchestration-Comparison.md) for the full task → tool matrix and [`wiki/With-OMC.md`](wiki/With-OMC.md) for worked recipes.
+OMCR is the research-tailored sibling of [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode). Where OMC orchestrates general code work with execution engines (`ralph`, `team`, `autopilot`, `ultraqa`, `ultrawork`), OMCR orchestrates the *research workflow* with **6 domain-specific engines** — `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand`, and the autonomous `/supervisor-drive`. Use either alone, or compose them: OMCR engines run inside OMC's generic loops for retries (`/ralph`), parallelism (`/team`, `/ultrawork`), multi-strategy exploration (`/ultraqa`), or budget-tracked drives (`/autopilot`). See [`wiki/Orchestration-Comparison.md`](wiki/Orchestration-Comparison.md) for the full task → tool matrix and [`wiki/With-OMC.md`](wiki/With-OMC.md) for worked recipes.
 
 A 6-agent research team + 6 orchestration engines + 4 setup/workflow commands + 14 skills (1 primitive + 13 backing surfaces) + 4 lightweight hooks. Full engine walkthrough: [`wiki/Using-Orchestration.md`](wiki/Using-Orchestration.md).
 
