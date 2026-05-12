@@ -18,30 +18,48 @@ OMCR은 Claude Code를 위한 연구 워크스페이스입니다: 6명의 에이
 
 **Step 1: 설치**
 
-마켓플레이스/플러그인 설치 (권장). Claude Code 슬래시 커맨드이니까 **한 번에 하나씩** 입력하세요 (두 줄을 동시에 붙여넣으면 실패합니다):
+**OMCR을 처음 설치한다면** — 마켓플레이스 플로우 (권장). Claude Code 슬래시 커맨드이니까 **한 번에 하나씩** 입력하세요:
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
 ```
 
+그다음:
+
 ```
 /plugin install oh-my-claudecode-research
 ```
 
-수동 checkout (플러그인 매니저 없이):
+**수동 checkout을 선호한다면** (플러그인 매니저 없이):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
+**OMCR이 이미 설치돼 있고 업데이트하려면** — 아래 두 슬래시 커맨드를 한 번에 하나씩 실행하세요:
+
+```
+/plugin marketplace update omcr
+```
+
+그다음:
+
+```
+/plugin update oh-my-claudecode-research
+```
+
+첫 번째는 마켓플레이스 메타데이터만 새로고침하고, 두 번째가 실제로 새 플러그인 파일을 받아옵니다. OMCR은 `main` 브랜치를 따라가니까 새 commit마다 새 버전으로 취급됩니다. 사용자 프로젝트 상태(CLAUDE.md, 에이전트 메모리, 세팅)는 그대로 유지됩니다 — Step 2를 다시 실행할 필요 없음.
+
 **Step 2: 셋업**
 
-연구 프로젝트의 Claude Code 세션 안에서 순서대로 실행 — **한 번에 하나씩** (두 줄을 동시에 붙여넣으면 실패합니다):
+**프로젝트당 한 번만 실행하면 됩니다.** 연구 프로젝트의 Claude Code 세션 안에서 슬래시 커맨드를 **한 번에 하나씩** 실행하세요:
 
 ```
 /omcr-setup
 ```
+
+그다음:
 
 ```
 /start-research

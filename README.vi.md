@@ -18,30 +18,48 @@ OMCR là một không gian làm việc nghiên cứu cho Claude Code: sáu agent
 
 **Step 1: Cài đặt**
 
-Cài qua marketplace/plugin (khuyến nghị). Đây là các lệnh slash của Claude Code — gõ **từng cái một** (paste cả hai dòng cùng lúc sẽ fail):
+**Nếu bạn cài OMCR lần đầu** — luồng marketplace (khuyến nghị). Đây là lệnh slash của Claude Code, gõ **từng cái một**:
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
 ```
 
+Sau đó:
+
 ```
 /plugin install oh-my-claudecode-research
 ```
 
-Checkout thủ công (không plugin manager):
+**Nếu bạn muốn checkout thủ công** (không plugin manager):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
+**Nếu OMCR đã cài và bạn muốn update** — chạy hai lệnh slash sau, từng cái một:
+
+```
+/plugin marketplace update omcr
+```
+
+Sau đó:
+
+```
+/plugin update oh-my-claudecode-research
+```
+
+Lệnh đầu chỉ refresh metadata của marketplace; lệnh thứ hai mới thực sự kéo file plugin mới về. OMCR theo nhánh `main`, nên mỗi commit mới được coi như một phiên bản mới. Trạng thái dự án của bạn (CLAUDE.md, agent memory, settings) không bị động vào — không cần chạy lại Step 2.
+
 **Step 2: Khởi tạo**
 
-Trong một phiên Claude Code ở dự án nghiên cứu của bạn, chạy theo thứ tự — **từng cái một** (paste cả hai dòng cùng lúc sẽ fail):
+**Chỉ cần làm một lần cho mỗi dự án.** Trong một phiên Claude Code ở dự án nghiên cứu của bạn, chạy lệnh slash **từng cái một**:
 
 ```
 /omcr-setup
 ```
+
+Sau đó:
 
 ```
 /start-research

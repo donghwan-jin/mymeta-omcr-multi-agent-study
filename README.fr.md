@@ -18,30 +18,48 @@ Une équipe de recherche de 6 agents + 6 moteurs d'orchestration + 4 commandes s
 
 **Step 1: Installation**
 
-Installation via marketplace/plugin (recommandé). Ce sont des commandes slash de Claude Code — saisissez-les **une à la fois** (coller les deux lignes en même temps échoue) :
+**Si vous installez OMCR pour la première fois** — flux marketplace (recommandé). Ce sont des commandes slash de Claude Code, saisissez-les **une à la fois** :
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
 ```
 
+Ensuite :
+
 ```
 /plugin install oh-my-claudecode-research
 ```
 
-Checkout manuel (sans gestionnaire de plugins) :
+**Si vous préférez le checkout manuel** (sans gestionnaire de plugins) :
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
+**Si OMCR est déjà installé et que vous voulez le mettre à jour** — lancez ces deux commandes slash une à la fois :
+
+```
+/plugin marketplace update omcr
+```
+
+Ensuite :
+
+```
+/plugin update oh-my-claudecode-research
+```
+
+La première rafraîchit seulement les métadonnées du marketplace ; la seconde récupère réellement les nouveaux fichiers du plugin. OMCR suit `main`, donc chaque nouveau commit est traité comme une nouvelle version. L'état de votre projet (CLAUDE.md, mémoire d'agents, settings) n'est pas touché — pas besoin de relancer le Step 2.
+
 **Step 2: Configuration**
 
-Dans une session Claude Code de votre projet de recherche, lancez dans l'ordre — **une à la fois** (coller les deux lignes en même temps échoue) :
+**À faire une seule fois par projet.** Dans une session Claude Code de votre projet de recherche, lancez les commandes slash **une à la fois** :
 
 ```
 /omcr-setup
 ```
+
+Ensuite :
 
 ```
 /start-research

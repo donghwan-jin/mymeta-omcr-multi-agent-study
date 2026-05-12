@@ -18,30 +18,48 @@ Ein 6-Agenten-Forschungsteam + 6 Orchestrierungs-Engines + 4 Setup/Workflow-Comm
 
 **Step 1: Installation**
 
-Marketplace/Plugin-Installation (empfohlen). Das sind Claude-Code-Slash-Commands — **einzeln eingeben** (beide Zeilen gleichzeitig einfügen schlägt fehl):
+**Wenn Sie OMCR zum ersten Mal installieren** — Marketplace-Flow (empfohlen). Das sind Claude-Code-Slash-Commands, **einzeln eingeben**:
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
 ```
 
+Dann:
+
 ```
 /plugin install oh-my-claudecode-research
 ```
 
-Manueller Checkout (ohne Plugin-Manager):
+**Wenn Sie manuellen Checkout bevorzugen** (ohne Plugin-Manager):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
+**Wenn OMCR bereits installiert ist und Sie es aktualisieren möchten** — diese zwei Slash-Commands einzeln ausführen:
+
+```
+/plugin marketplace update omcr
+```
+
+Dann:
+
+```
+/plugin update oh-my-claudecode-research
+```
+
+Der erste aktualisiert nur die Marketplace-Metadaten; der zweite holt tatsächlich die neuen Plugin-Dateien. OMCR folgt `main`, jeder neue Commit wird also als neue Version behandelt. Ihr Projekt-Status (CLAUDE.md, Agent-Memory, Settings) wird nicht angetastet — Step 2 muss nicht erneut ausgeführt werden.
+
 **Step 2: Setup**
 
-In einer Claude-Code-Session in Ihrem Forschungsprojekt der Reihe nach ausführen — **einzeln** (beide Zeilen gleichzeitig einfügen schlägt fehl):
+**Muss nur einmal pro Projekt ausgeführt werden.** In einer Claude-Code-Session in Ihrem Forschungsprojekt die Slash-Commands **einzeln** ausführen:
 
 ```
 /omcr-setup
 ```
+
+Dann:
 
 ```
 /start-research

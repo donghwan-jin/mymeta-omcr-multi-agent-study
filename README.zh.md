@@ -18,30 +18,48 @@ OMCR 是面向 Claude Code 的科研工作空间:6 名 agent —— `@supervisor
 
 **Step 1: 安装**
 
-Marketplace/plugin 安装(推荐)。这些是 Claude Code 的斜杠命令 —— **一次输入一个**(同时粘贴两行会失败):
+**如果你是第一次安装 OMCR** —— marketplace 流程(推荐)。这些是 Claude Code 的斜杠命令,**一次输入一个**:
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
 ```
 
+然后:
+
 ```
 /plugin install oh-my-claudecode-research
 ```
 
-手动 checkout(不用插件管理器):
+**如果你想用手动 checkout**(不用插件管理器):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
+**如果 OMCR 已经安装,想更新** —— 按顺序一次一条运行下面两条:
+
+```
+/plugin marketplace update omcr
+```
+
+然后:
+
+```
+/plugin update oh-my-claudecode-research
+```
+
+第一条只刷新 marketplace 元数据,第二条才真正拉取新的插件文件。OMCR 跟随 `main` 分支,所以每个新 commit 都被视作新版本。项目状态(CLAUDE.md、agent 内存、设置)不会被改动 —— 不需要重新跑 Step 2。
+
 **Step 2: 设置**
 
-在你的研究项目的 Claude Code 会话中按顺序运行 —— **一次输入一个**(同时粘贴两行会失败):
+**每个项目只需要做一次。** 在你的研究项目的 Claude Code 会话中,**一次输入一个**斜杠命令:
 
 ```
 /omcr-setup
 ```
+
+然后:
 
 ```
 /start-research

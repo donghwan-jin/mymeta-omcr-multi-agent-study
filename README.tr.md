@@ -18,30 +18,48 @@ OMCR, Claude Code için bir araştırma çalışma alanıdır: altı ajan — `@
 
 **Step 1: Kurulum**
 
-Marketplace/plugin kurulumu (önerilir). Bunlar Claude Code slash komutlarıdır — **teker teker** girin (iki satırı aynı anda yapıştırırsanız hata verir):
+**OMCR'ı ilk kez kuruyorsanız** — marketplace akışı (önerilir). Bunlar Claude Code slash komutlarıdır, **teker teker** girin:
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
 ```
 
+Sonra:
+
 ```
 /plugin install oh-my-claudecode-research
 ```
 
-Manuel checkout (plugin yöneticisi olmadan):
+**Manuel checkout istiyorsanız** (plugin yöneticisi olmadan):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
+**OMCR zaten kuruluysa ve güncellemek istiyorsanız** — aşağıdaki iki slash komutunu teker teker çalıştırın:
+
+```
+/plugin marketplace update omcr
+```
+
+Sonra:
+
+```
+/plugin update oh-my-claudecode-research
+```
+
+İlki sadece marketplace metadata'sını yeniler; ikincisi gerçekten yeni plugin dosyalarını çeker. OMCR `main` dalını takip ettiği için her yeni commit yeni sürüm olarak işlenir. Projenizin durumu (CLAUDE.md, ajan belleği, ayarlar) değişmez — Step 2'yi yeniden çalıştırmaya gerek yok.
+
 **Step 2: Yapılandırma**
 
-Araştırma projenizdeki bir Claude Code oturumu içinde sırayla çalıştırın — **teker teker** (iki satırı aynı anda yapıştırırsanız hata verir):
+**Proje başına yalnızca bir kez yapılır.** Araştırma projenizdeki bir Claude Code oturumu içinde slash komutlarını **teker teker** çalıştırın:
 
 ```
 /omcr-setup
 ```
+
+Sonra:
 
 ```
 /start-research

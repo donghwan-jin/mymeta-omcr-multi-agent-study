@@ -32,6 +32,18 @@ cp /path/to/checkout/agents/*.md /path/to/your-project/.claude/agents/
 
 For full feature parity, use Option A.
 
+**Updating an existing install** (Option A users): run these two commands in order, one at a time:
+
+```
+/plugin marketplace update omcr
+```
+
+```
+/plugin update oh-my-claudecode-research
+```
+
+The first refreshes the marketplace metadata; the second actually pulls the new plugin files. OMCR tracks `main` (no version pinning yet), so every new commit is treated as a new version. If you used Option B/C, `git pull` in your checkout instead.
+
 ## 2. Verify install
 
 In a Claude Code session, type `@` and check the autocomplete picker for 6 agents:
