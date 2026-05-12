@@ -1,6 +1,6 @@
 # Commands — reference
 
-OMCR ships 4 slash commands and 3 invocable skills, all parameterized via the [Project context + Research stack blocks](Configuration.md) in your project's `CLAUDE.md`.
+OMCR ships 4 slash commands (all thin dispatchers) and 7 invocable skills (4 of which back the slash commands), all parameterized via the [Project context + Research stack blocks](Configuration.md) in your project's `CLAUDE.md`.
 
 ## `/omcr-setup`
 

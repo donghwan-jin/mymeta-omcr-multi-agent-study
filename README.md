@@ -6,7 +6,7 @@ _Don't learn paper-writing tooling. Just use OMCR._
 
 OMCR is the research-tailored sibling of [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode). Where OMC orchestrates general code work (`ralph`, `team`, `autopilot`, …), OMCR orchestrates the *paper-writing lifecycle* — hypothesis interview → analysis → figure deck → manuscript → review. Works standalone or with OMC; see [`wiki/With-OMC.md`](wiki/With-OMC.md).
 
-A 6-agent research team + 4 parameterized commands + 3 skills + 4 lightweight hooks.
+A 6-agent research team + 4 parameterized commands + 7 skills + 4 lightweight hooks.
 
 > **Status: v0.1.** Breaking changes are likely. Feedback and PRs welcome.
 
@@ -34,10 +34,16 @@ A 6-agent research team + 4 parameterized commands + 3 skills + 4 lightweight ho
 | `/todofig [Fig N]` | Compare a captured figure deck against an outline → prioritized P0/P1/P2 TODO. |
 | `/sync` | Reconcile current state (deck) with goal (outline), refresh agent memories, optionally embed cropped figures into a target document. Status snapshot, not a TODO. |
 
-### 3 skills
+### 7 skills
+
+The 4 slash commands are thin dispatchers — each forwards `$ARGUMENTS` to a matching skill. The remaining 3 skills are standalone-invocable.
 
 | Skill | What it does |
 |---|---|
+| `omcr-setup` | Backs `/omcr-setup`. Install-style: scaffold `CLAUDE.md` marker blocks, agent-memory dirs, bibliography files, curated permission allowlist. |
+| `start-research` | Backs `/start-research`. Interview-driven first-project init: fills the scaffolded `CLAUDE.md` placeholders, optionally applies a preset overlay, delegates manuscript scaffold to `manuscript-scaffold`. |
+| `sync` | Backs `/sync`. Reconcile current state (captured figure deck) with the outline; refresh agent memories with factual drifts; status snapshot only (no TODO). |
+| `todofig` | Backs `/todofig`. Compare a captured figure deck against the outline; produce a prioritized P0/P1/P2 TODO of gaps. |
 | `cropfig` | Three-step pipeline from a `.key`/`.pptx` deck to manuscript + outline artifacts: per-slide vector PDFs (cropped, manuscript-grade) + outline-grade PNGs. Invoked directly or by other commands; no slash. |
 | `verify-citation` | Existence + metadata check via CrossRef/OpenAlex. Gates every entry `@literature-curator` adds, writes verification verdict into the project summary table. |
 | `manuscript-scaffold` | Copy the bundled LaTeX skeleton into the user's manuscript dir, optionally apply a journal-specific `\documentclass` from the bundled registry, optionally clone an Overleaf project (token never persisted to tracked files), commit on the default branch, ask before pushing. Called by `/start-research` phase 5; also standalone-invocable. |
@@ -73,7 +79,7 @@ git clone https://github.com/youngeun1209/oh-my-claudecode-research \
 Then open Claude Code and run `/plugin` to load it. After load (either path):
 - 6 agents appear in the `@`-mention picker
 - `/omcr-setup`, `/start-research`, `/todofig`, `/sync` appear in the slash-command picker
-- 3 skills (`cropfig`, `verify-citation`, `manuscript-scaffold`) become invocable
+- 7 skills (`omcr-setup`, `start-research`, `sync`, `todofig`, `cropfig`, `verify-citation`, `manuscript-scaffold`) become invocable
 - 4 hooks register on session start (PII guard, MEMORY auto-load, citation warning, setup nudge)
 
 **Cherry-pick by file** (no plugin manager — copy agents into a specific project):

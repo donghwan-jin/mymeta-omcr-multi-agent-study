@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 v0.1.x of a Claude Code plugin that ships:
 - 6 research-team agents (`agents/`)
 - 4 parameterized slash commands (`commands/`)
-- 5 skills (`skills/omcr-setup/`, `skills/start-research/`, `skills/cropfig/`, `skills/verify-citation/`, `skills/manuscript-scaffold/`)
+- 7 skills (`skills/omcr-setup/`, `skills/start-research/`, `skills/sync/`, `skills/todofig/`, `skills/cropfig/`, `skills/verify-citation/`, `skills/manuscript-scaffold/`)
 - 4 lightweight hooks (`hooks/`)
 - a canonical memory schema (`templates/MEMORY.template.md`)
 - the plugin manifest (`.claude-plugin/plugin.json`)
@@ -52,12 +52,12 @@ oh-my-claudecode-research/
 │   ├── figure-descriptor.md
 │   ├── reviewer.md
 │   └── literature-curator.md         # bibliography curator + BibTeX/summary-table owner
-├── commands/                         # 4 parameterized slash commands (thin dispatchers)
-│   ├── omcr-setup.md                 # /omcr-setup — install OMCR infra (CLAUDE.md markers, agent-memory, bib, permissions). No interview.
-│   ├── start-research.md             # /start-research — interview-driven first-project init (fills CLAUDE.md, manuscript scaffold)
-│   ├── todofig.md                    # /todofig — deck-vs-outline gap analyzer
-│   └── sync.md                       # /sync — state reconciler + optional figure embed
-├── skills/
+├── commands/                         # 4 thin dispatcher slash commands — all delegate to a matching skill
+│   ├── omcr-setup.md                 # /omcr-setup → skills/omcr-setup/
+│   ├── start-research.md             # /start-research → skills/start-research/
+│   ├── todofig.md                    # /todofig → skills/todofig/
+│   └── sync.md                       # /sync → skills/sync/
+├── skills/                           # 7 skills (5 back the slash commands, 2 are standalone)
 │   ├── cropfig/                      # generic figure-only crop (env-var + CLAUDE.md driven)
 │   │   ├── SKILL.md
 │   │   └── crop_top_label.py
@@ -68,7 +68,7 @@ oh-my-claudecode-research/
 │   │       ├── 02-journal-template.md
 │   │       ├── 03-skeleton.md
 │   │       └── 04-commit-push.md
-│   ├── omcr-setup/                   # /omcr-setup — install-style OMCR infra. 6 phases: state / CLAUDE.md scaffold / agent-memory / bib / permissions / report. No interview.
+│   ├── omcr-setup/                   # backs /omcr-setup — install-style OMCR infra. 6 phases: state / CLAUDE.md scaffold / agent-memory / bib / permissions / report. No interview.
 │   │   ├── SKILL.md
 │   │   └── phases/
 │   │       ├── 01-state-check.md
@@ -77,7 +77,7 @@ oh-my-claudecode-research/
 │   │       ├── 04-bibliography.md
 │   │       ├── 05-permissions.md
 │   │       └── 06-report.md
-│   ├── start-research/               # /start-research — interview-driven init. 6 phases: precheck / interview / fill CLAUDE.md / preset overlay / manuscript / report
+│   ├── start-research/               # backs /start-research — interview-driven init. 6 phases: precheck / interview / fill CLAUDE.md / preset overlay / manuscript / report
 │   │   ├── SKILL.md
 │   │   └── phases/
 │   │       ├── 01-precheck.md
@@ -86,6 +86,10 @@ oh-my-claudecode-research/
 │   │       ├── 04-preset-overlay.md
 │   │       ├── 05-manuscript-scaffold.md
 │   │       └── 06-report.md
+│   ├── sync/                         # backs /sync — state reconciler. Single-file SKILL.md (status snapshot + agent-memory drift reconciliation).
+│   │   └── SKILL.md
+│   ├── todofig/                      # backs /todofig — deck-vs-outline gap analyzer. Single-file SKILL.md (P0/P1/P2 prioritized TODO).
+│   │   └── SKILL.md
 │   └── verify-citation/              # CrossRef/OpenAlex existence + metadata check; updates summary CSV
 │       ├── SKILL.md
 │       └── verify_citation.py
@@ -154,8 +158,8 @@ When editing agents, link to the template file via a relative path so users disc
 
 The plugin manifest (`.claude-plugin/plugin.json`) declares four registries:
 - `agents: ./agents/` — 6 `@`-mentionable agents
-- `commands: ./commands/` — 4 slash commands (`/omcr-setup` installs OMCR infrastructure; `/start-research` runs the interview-driven first-project init; `/todofig` and `/sync` resolved against the user's `## Research stack` block)
-- `skills: ./skills/` — 5 invocable skills (`omcr-setup`, `start-research`, `cropfig`, `verify-citation`, `manuscript-scaffold`)
+- `commands: ./commands/` — 4 thin dispatcher slash commands (`/omcr-setup`, `/start-research`, `/sync`, `/todofig`) — each forwards `$ARGUMENTS` to its matching skill
+- `skills: ./skills/` — 7 invocable skills (`omcr-setup`, `start-research`, `sync`, `todofig`, `cropfig`, `verify-citation`, `manuscript-scaffold`). The first 4 back the 4 slash commands; `cropfig`, `verify-citation`, `manuscript-scaffold` are standalone-invocable (called by other agents / skills).
 - `hooks: ./hooks/hooks.json` — 4 lifecycle hooks
 
 The 4 hooks wire to Claude Code events:
