@@ -131,7 +131,6 @@ Beyond the `## Research stack` block, your project's `CLAUDE.md` should also hav
 
 - **Working title:** [your project name or [TBD]]
 - **Field:** [your field / sub-field]
-- **First author / PI:** [your name] / [PI name]
 - **Target venue:** [target journal / conference, or [TBD: short note]]
 - **Backup venues:** [comma-separated top 2–3, or [TBD]]
 - **Central hypothesis:** [one sentence, or [TBD: short note]]

@@ -1,10 +1,10 @@
 # supervisor agent — memory (redacted skeleton)
 
 > **Skeleton only.** This file shows the structure used by the original DoD-Agent
-> supervisor's memory; all concrete content (advisor, target venue, dataset,
-> hypothesis text, subject IDs, p-values, deadlines) has been stripped. Copy
-> this file into your own project's `.claude/agent-memory/supervisor/MEMORY.md`
-> and fill in your project's specifics.
+> supervisor's memory; all concrete content (target venue, dataset, hypothesis
+> text, subject IDs, p-values, deadlines) has been stripped. Copy this file
+> into your own project's `.claude/agent-memory/supervisor/MEMORY.md` and fill
+> in your project's specifics.
 
 **Last synced:** [YYYY-MM-DD]
 
@@ -12,7 +12,6 @@
 
 ## Project header
 - **Title (working):** [PROJECT_TITLE]
-- **First author / PI:** [FIRST_AUTHOR] / [PI_NAME]
 - **Target venue:** [TARGET_VENUE]
 - **Submission target date:** [DEADLINE]
 

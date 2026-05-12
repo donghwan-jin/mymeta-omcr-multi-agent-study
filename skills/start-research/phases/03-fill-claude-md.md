@@ -9,7 +9,6 @@ Use this canonical layout for the three blocks — substitute interview answers 
 
 - **Working title:** <title or [TBD]>
 - **Field:** <field>
-- **First author / PI:** <first author> / <PI>
 - **Target venue:** <venue or [TBD: short note]>
 - **Backup venues:** <comma-separated or [TBD]>
 - **Central hypothesis:** <one sentence or [TBD: short note]>

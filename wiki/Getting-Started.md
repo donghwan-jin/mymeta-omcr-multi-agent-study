@@ -73,7 +73,7 @@ Safe to re-run after plugin updates — never overwrites your filled-in content.
 This walks an interactive interview to fill the `[TBD]` placeholders that `/omcr-setup` scaffolded:
 
 **`## Project context`** (scientific identity — never invented for you)
-- Working title, field / sub-field, first author / PI
+- Working title, field / sub-field
 - Target venue (+ optional 2–3 backups)
 - Central hypothesis, research topic, datasets
 - Narrative spine: Gap / Question / Approach / Implication

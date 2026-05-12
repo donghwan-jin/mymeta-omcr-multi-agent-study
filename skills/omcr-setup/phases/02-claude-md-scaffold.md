@@ -20,7 +20,6 @@ Preserve all existing content (e.g. an existing `# <repo name>` heading, a "Repo
 
 - **Working title:** [TBD]
 - **Field:** [TBD]
-- **First author / PI:** [TBD] / [TBD]
 - **Target venue:** [TBD]
 - **Backup venues:** [TBD]
 - **Central hypothesis:** [TBD]
