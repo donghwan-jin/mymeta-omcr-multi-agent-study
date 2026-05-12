@@ -6,17 +6,19 @@
 
 _Đừng học công cụ nghiên cứu. Cứ dùng OMCR._
 
-OMCR là phiên bản chuyên cho nghiên cứu của [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode). Trong khi OMC điều phối công việc code chung bằng các engine thực thi (`ralph`, `team`, `autopilot`, `ultraqa`, `ultrawork`), OMCR điều phối *quy trình nghiên cứu* bằng **6 engine chuyên biệt theo domain** — `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand`, và `/supervisor-drive` tự trị. Dùng riêng hoặc kết hợp đều được: các engine của OMCR chạy bên trong vòng lặp tổng quát của OMC để retry (`/ralph`), parallel (`/team`, `/ultrawork`), khám phá đa chiến lược (`/ultraqa`), hoặc drive theo budget (`/autopilot`). Xem [`wiki/Orchestration-Comparison.md`](wiki/Orchestration-Comparison.md) cho ma trận task → tool đầy đủ và [`wiki/With-OMC.md`](wiki/With-OMC.md) cho công thức thực tế.
+OMCR là một không gian làm việc nghiên cứu cho Claude Code: sáu agent — `@supervisor`, `@analysis-implementer`, `@paper-writer`, `@figure-descriptor`, `@reviewer`, `@literature-curator` — bạn cùng làm việc trên giả thuyết, phân tích, viết, figure, citation, review. Sáu engine điều phối tự động hóa các vòng lặp phổ biến khi bạn muốn hands-off. Kết hợp với [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) khi cần điều phối tổng quát ở tầng trên (retry, parallel, budget tracking).
 
-Đội nghiên cứu 6 agent + 6 engine điều phối + 4 lệnh setup/workflow + 14 skill (1 primitive + 13 backing surface) + 4 hook nhẹ. Hướng dẫn engine đầy đủ: [`wiki/Using-Orchestration.md`](wiki/Using-Orchestration.md)
+Đội nghiên cứu 6 agent + 6 engine điều phối + 4 lệnh setup/workflow + 14 skill + 4 hook nhẹ.
 
 > **Trạng thái: v0.1.** Có thể có thay đổi phá vỡ tương thích. Hoan nghênh feedback và PR.
 
 > **Tài liệu đầy đủ:** [`wiki/Home.md`](wiki/Home.md)
 
-## Install
+## Quick start
 
-**Khuyến nghị — quy trình Claude Code marketplace** (mỗi lệnh slash một dòng, gõ từng cái một):
+**Step 1: Cài đặt**
+
+Cài qua marketplace/plugin (khuyến nghị). Đây là các lệnh slash của Claude Code — gõ **từng cái một** (paste cả hai dòng cùng lúc sẽ fail):
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
@@ -26,50 +28,36 @@ OMCR là phiên bản chuyên cho nghiên cứu của [oh-my-claudecode](https:/
 /plugin install oh-my-claudecode-research
 ```
 
-**Thay thế — checkout thủ công** (không cần plugin manager):
+Checkout thủ công (không plugin manager):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
-Sau đó mở Claude Code và chạy `/plugin` để load. Sau khi load (bằng đường nào cũng vậy):
-- 6 agent xuất hiện trong picker `@`-mention
-- 10 lệnh slash xuất hiện trong picker: `/omcr-setup`, `/start-research`, `/todofig`, `/sync` (setup/workflow) + `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand`, `/supervisor-drive` (engine điều phối)
-- 14 skill trở nên gọi được (7 setup/workflow + 1 primitive `orchestrate` + 6 engine skill)
-- 4 hook đăng ký khi bắt đầu phiên (PII guard, MEMORY auto-load, cảnh báo citation, setup nudge)
+**Step 2: Khởi tạo**
 
-**Cherry-pick theo file** (không plugin manager — chỉ chép agents vào một dự án cụ thể):
-
-```bash
-git clone https://github.com/youngeun1209/oh-my-claudecode-research /path/to/checkout
-cp /path/to/checkout/agents/*.md /path/to/your-project/.claude/agents/
-```
-
-Cách này bỏ qua lệnh, skill, và hook. Muốn đầy đủ tính năng, dùng cài plugin.
-
-## Quick start
-
-Sau khi cài, mở một dự án nghiên cứu và chạy theo thứ tự:
+Trong một phiên Claude Code ở dự án nghiên cứu của bạn, chạy theo thứ tự — **từng cái một** (paste cả hai dòng cùng lúc sẽ fail):
 
 ```
 /omcr-setup
+```
+
+```
 /start-research
 ```
 
-**`/omcr-setup`** là kiểu cài đặt — không hỏi về nghiên cứu của bạn. Chỉ lát hạ tầng: các block trống `## Project context` / `## Research stack` / `## Language preference` trong `CLAUDE.md`, `.claude/agent-memory/<agent>/MEMORY.md` cho cả 6 agent (template canonical), `paper/references.bib` + `./references.csv` trống cho literature-curator, và một allowlist quyền được tuyển chọn trong `.claude/settings.json` (git read-only, tìm kiếm file, build LaTeX, API citation, figure crop — opt-in cho phân tích Python; git write và xóa file vẫn thủ công).
+`/omcr-setup` lát hạ tầng — các block trống `## Project context` / `## Research stack` / `## Language preference` trong `CLAUDE.md`, `.claude/agent-memory/<agent>/MEMORY.md` cho cả 6 agent, `paper/references.bib` + `./references.csv` trống cho literature-curator, và một allowlist quyền được tuyển chọn trong `.claude/settings.json`. **Không hỏi về nghiên cứu của bạn.**
 
-**`/start-research`** là phỏng vấn. Nó dẫn bạn điền các placeholder đó:
+`/start-research` là phỏng vấn. Nó dẫn bạn điền các placeholder đó:
 - **Project context** (working title, lĩnh vực, venue mục tiêu, giả thuyết trung tâm, chủ đề nghiên cứu, dataset, mạch truyện)
 - **Research stack** (đường dẫn deck/outline, số figure, đường dẫn BibTeX + summary-table, email CrossRef tùy chọn)
 - **Preset overlay** (tùy chọn — `examples/neuro-fmri/` v.v. — chỉ thay file `MEMORY.md` của agent còn byte-identical với template canonical)
 - **Manuscript scaffold** (ủy quyền cho skill `manuscript-scaffold`: LaTeX skeleton + lookup template tạp chí + clone Overleaf tùy chọn)
 
-Nếu bạn chạy `/start-research` trước `/omcr-setup`, nó đề nghị chạy `/omcr-setup` trước. Các field khoa học bị bỏ qua được lưu thành `[TBD: <ghi chú ngắn>]` — không bao giờ bịa — để `@supervisor` biết cần follow up.
+Nếu bạn chạy `/start-research` trước `/omcr-setup`, nó đề nghị chạy `/omcr-setup` trước. Các field khoa học bị bỏ qua được lưu thành `[TBD: <ghi chú ngắn>]` — không bao giờ bịa — để `@supervisor` biết cần follow up. Nếu bỏ qua cả hai, hook `setup-nudge` ở SessionStart in một dòng nhắc mỗi phiên cho tới khi bạn init (tắt bằng `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1`).
 
-Nếu bạn bỏ qua cả hai, hook `setup-nudge` ở SessionStart in một dòng nhắc mỗi phiên cho tới khi bạn init. Tắt bằng `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1`.
-
-Sau cả hai, bắt đầu cuộc trò chuyện thật:
+**Step 3: Bắt đầu**
 
 ```
 @supervisor where are we?

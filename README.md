@@ -6,17 +6,19 @@ English | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](READM
 
 _Don't learn research tooling. Just use OMCR._
 
-OMCR is the research-tailored sibling of [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode). Where OMC orchestrates general code work with execution engines (`ralph`, `team`, `autopilot`, `ultraqa`, `ultrawork`), OMCR orchestrates the *research workflow* with **6 domain-specific engines** — `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand`, and the autonomous `/supervisor-drive`. Use either alone, or compose them: OMCR engines run inside OMC's generic loops for retries (`/ralph`), parallelism (`/team`, `/ultrawork`), multi-strategy exploration (`/ultraqa`), or budget-tracked drives (`/autopilot`). See [`wiki/Orchestration-Comparison.md`](wiki/Orchestration-Comparison.md) for the full task → tool matrix and [`wiki/With-OMC.md`](wiki/With-OMC.md) for worked recipes.
+OMCR is a research workspace for Claude Code: six agents — `@supervisor`, `@analysis-implementer`, `@paper-writer`, `@figure-descriptor`, `@reviewer`, `@literature-curator` — you work alongside on hypothesis, analysis, writing, figures, citations, review. Six orchestration engines automate the common loops when you want it hands-off. Compose with [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) for generic orchestration on top (retries, parallelism, budget tracking).
 
-A 6-agent research team + 6 orchestration engines + 4 setup/workflow commands + 14 skills (1 primitive + 13 backing surfaces) + 4 lightweight hooks. Full engine walkthrough: [`wiki/Using-Orchestration.md`](wiki/Using-Orchestration.md).
+A 6-agent research team + 6 orchestration engines + 4 setup/workflow commands + 14 skills + 4 lightweight hooks.
 
 > **Status: v0.1.** Breaking changes are likely. Feedback and PRs welcome.
 
 > **Full documentation:** [`wiki/Home.md`](wiki/Home.md)
 
-## Install
+## Quick start
 
-**Recommended — Claude Code marketplace flow** (one slash command per line, enter them one at a time):
+**Step 1: Install**
+
+Marketplace/plugin install (recommended). These are Claude Code slash commands — enter them **one at a time** (pasting both lines at once will fail):
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
@@ -26,50 +28,37 @@ A 6-agent research team + 6 orchestration engines + 4 setup/workflow commands + 
 /plugin install oh-my-claudecode-research
 ```
 
-**Alternative — manual checkout** (no plugin manager):
+Manual checkout (no plugin manager):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
-Then open Claude Code and run `/plugin` to load it. After load (either path):
-- 6 agents appear in the `@`-mention picker
-- 10 slash commands appear in the picker: `/omcr-setup`, `/start-research`, `/todofig`, `/sync` (setup/workflow) + `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand`, `/supervisor-drive` (orchestration engines)
-- 14 skills become invocable (7 setup/workflow + 1 primitive `orchestrate` + 6 engine skills)
-- 4 hooks register on session start (PII guard, MEMORY auto-load, citation warning, setup nudge)
+**Step 2: Setup**
 
-**Cherry-pick by file** (no plugin manager — copy agents into a specific project):
-
-```bash
-git clone https://github.com/youngeun1209/oh-my-claudecode-research /path/to/checkout
-cp /path/to/checkout/agents/*.md /path/to/your-project/.claude/agents/
-```
-
-This skips the commands, the skill, and the hooks. For full feature parity, use the plugin install.
-
-## Quick start
-
-After installing, open a research project and run these in order:
+Inside a Claude Code session in your research project, run these in order — **one at a time** (pasting both lines at once will fail):
 
 ```
 /omcr-setup
+```
+
+```
 /start-research
 ```
 
-**`/omcr-setup`** is install-style — no questions about your research. It just lays down infrastructure: empty `## Project context` / `## Research stack` / `## Language preference` blocks in `CLAUDE.md`, `.claude/agent-memory/<agent>/MEMORY.md` for all 6 agents (canonical template), empty `paper/references.bib` + `./references.csv` for the literature-curator, and a curated `.claude/settings.json` permission allowlist (read-only git, file search, LaTeX build, citation API, figure crop — opt-in for Python analysis; git write and file deletion stay manual).
+`/omcr-setup` lays down infrastructure — empty `## Project context` / `## Research stack` / `## Language preference` blocks in `CLAUDE.md`, `.claude/agent-memory/<agent>/MEMORY.md` for all 6 agents, empty `paper/references.bib` + `./references.csv` for the literature-curator, and a curated `.claude/settings.json` permission allowlist. **No questions about your research.**
 
-**`/start-research`** is the interview. It walks you through filling those placeholders:
+`/start-research` is the interview. It walks you through filling those placeholders:
+
 - **Project context** (working title, field, target venue, central hypothesis, research topic, datasets, narrative spine)
 - **Research stack** (deck/outline paths, figure count, BibTeX + summary-table paths, optional CrossRef email)
-- **Preset overlay** (optional — `examples/neuro-fmri/` etc. — only replaces agent `MEMORY.md` files that are still byte-identical to the canonical template)
+- **Preset overlay** (optional — `examples/neuro-fmri/` etc. — only replaces agent `MEMORY.md` files still byte-identical to the canonical template)
 - **Manuscript scaffold** (delegates to the `manuscript-scaffold` skill: LaTeX skeleton + journal template lookup + optional Overleaf clone)
 
-If you run `/start-research` before `/omcr-setup`, it offers to run `/omcr-setup` first. Skipped scientific fields are saved as `[TBD: <short note>]` — never invented — so `@supervisor` knows to follow up.
+If you run `/start-research` before `/omcr-setup`, it offers to run `/omcr-setup` first. Skipped scientific fields are saved as `[TBD: <short note>]` — never invented — so `@supervisor` knows to follow up. If you skip both, the SessionStart `setup-nudge` hook prints a one-line reminder every session until you initialize (suppress with `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1`).
 
-If you skip both, the SessionStart `setup-nudge` hook prints a one-line reminder every session until you initialize. Suppress with `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1`.
-
-After both, start a real conversation:
+**Step 3: Start working**
 
 ```
 @supervisor where are we?
@@ -81,46 +70,46 @@ Full walkthrough: [`wiki/Getting-Started.md`](wiki/Getting-Started.md)
 
 ### 6 agents (`@`-mention)
 
-| Agent | Role |
-|---|---|
-| `@supervisor` | PI-level scientific vision keeper + project orchestrator. Owns the central hypothesis; delegates to subagents. |
-| `@analysis-implementer` | Implements pipelines, statistical analyses, ML/sim models. Field-neutral by default. |
-| `@paper-writer` | Drafts manuscript sections at high-impact-venue prose quality. |
-| `@figure-descriptor` | Designs figures as implementation-ready briefs — no image generation. |
-| `@reviewer` | Adversarial pre-submission review at the target venue's level. |
-| `@literature-curator` | Owns the project BibTeX + literature summary table in lockstep. Resolves `[CITE: ...]` placeholders, verifies citations via the `verify-citation` skill, never fabricates. |
+| Agent                     | Role                                                                                                                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `@supervisor`           | PI-level scientific vision keeper + project orchestrator. Owns the central hypothesis; delegates to subagents.                                                                 |
+| `@analysis-implementer` | Implements pipelines, statistical analyses, ML/sim models. Field-neutral by default.                                                                                           |
+| `@paper-writer`         | Drafts manuscript sections at high-impact-venue prose quality.                                                                                                                 |
+| `@figure-descriptor`    | Designs figures as implementation-ready briefs — no image generation.                                                                                                         |
+| `@reviewer`             | Adversarial pre-submission review at the target venue's level.                                                                                                                 |
+| `@literature-curator`   | Owns the project BibTeX + literature summary table in lockstep. Resolves `[CITE: ...]` placeholders, verifies citations via the `verify-citation` skill, never fabricates. |
 
 ### 4 slash commands (parameterized via your project's CLAUDE.md)
 
-| Command | What it does |
-|---|---|
-| `/omcr-setup` | Install-style: scaffold empty `CLAUDE.md` marker blocks, `.claude/agent-memory/` dirs, empty `references.bib`/`references.csv`, and a curated `.claude/settings.json` permission allowlist. **No questions about your research.** Run this once per project. |
+| Command                                  | What it does                                                                                                                                                                                                                                                                                                                                        |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/omcr-setup`                          | Install-style: scaffold empty `CLAUDE.md` marker blocks, `.claude/agent-memory/` dirs, empty `references.bib`/`references.csv`, and a curated `.claude/settings.json` permission allowlist. **No questions about your research.** Run this once per project.                                                                        |
 | `/start-research [minimal\|neuro-fmri]` | Interview-driven: fill the `CLAUDE.md` placeholders (working title, hypothesis, target venue, datasets, narrative spine), optionally apply a preset to agent memory, scaffold the LaTeX manuscript dir (via the `manuscript-scaffold` skill, with optional journal template + Overleaf clone). Offers to run `/omcr-setup` first if not done. |
-| `/todofig [Fig N]` | Compare a captured figure deck against an outline → prioritized P0/P1/P2 TODO. |
-| `/sync` | Reconcile current state (deck) with goal (outline), refresh agent memories, optionally embed cropped figures into a target document. Status snapshot, not a TODO. |
+| `/todofig [Fig N]`                     | Compare a captured figure deck against an outline → prioritized P0/P1/P2 TODO.                                                                                                                                                                                                                                                                     |
+| `/sync`                                | Reconcile current state (deck) with goal (outline), refresh agent memories, optionally embed cropped figures into a target document. Status snapshot, not a TODO.                                                                                                                                                                                   |
 
 ### 14 skills
 
 The 4 setup/workflow slash commands are thin dispatchers — each forwards `$ARGUMENTS` to a matching skill. `cropfig`, `verify-citation`, `manuscript-scaffold` are standalone-invocable. **Plus** 1 primitive (`orchestrate` — internal, composes via 4 phases) + 6 engine skills backing the 6 orchestration commands; full walkthrough at [`wiki/Using-Orchestration.md`](wiki/Using-Orchestration.md). The table below covers the 7 setup/workflow skills.
 
-| Skill | What it does |
-|---|---|
-| `omcr-setup` | Backs `/omcr-setup`. Install-style: scaffold `CLAUDE.md` marker blocks, agent-memory dirs, bibliography files, curated permission allowlist. |
-| `start-research` | Backs `/start-research`. Interview-driven first-project init: fills the scaffolded `CLAUDE.md` placeholders, optionally applies a preset overlay, delegates manuscript scaffold to `manuscript-scaffold`. |
-| `sync` | Backs `/sync`. Reconcile current state (captured figure deck) with the outline; refresh agent memories with factual drifts; status snapshot only (no TODO). |
-| `todofig` | Backs `/todofig`. Compare a captured figure deck against the outline; produce a prioritized P0/P1/P2 TODO of gaps. |
-| `cropfig` | Three-step pipeline from a `.key`/`.pptx` deck to manuscript + outline artifacts: per-slide vector PDFs (cropped, manuscript-grade) + outline-grade PNGs. Invoked directly or by other commands; no slash. |
-| `verify-citation` | Existence + metadata check via CrossRef/OpenAlex. Gates every entry `@literature-curator` adds, writes verification verdict into the project summary table. |
+| Skill                   | What it does                                                                                                                                                                                                                                                                                                                                         |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `omcr-setup`          | Backs `/omcr-setup`. Install-style: scaffold `CLAUDE.md` marker blocks, agent-memory dirs, bibliography files, curated permission allowlist.                                                                                                                                                                                                     |
+| `start-research`      | Backs `/start-research`. Interview-driven first-project init: fills the scaffolded `CLAUDE.md` placeholders, optionally applies a preset overlay, delegates manuscript scaffold to `manuscript-scaffold`.                                                                                                                                      |
+| `sync`                | Backs `/sync`. Reconcile current state (captured figure deck) with the outline; refresh agent memories with factual drifts; status snapshot only (no TODO).                                                                                                                                                                                        |
+| `todofig`             | Backs `/todofig`. Compare a captured figure deck against the outline; produce a prioritized P0/P1/P2 TODO of gaps.                                                                                                                                                                                                                                 |
+| `cropfig`             | Three-step pipeline from a `.key`/`.pptx` deck to manuscript + outline artifacts: per-slide vector PDFs (cropped, manuscript-grade) + outline-grade PNGs. Invoked directly or by other commands; no slash.                                                                                                                                       |
+| `verify-citation`     | Existence + metadata check via CrossRef/OpenAlex. Gates every entry `@literature-curator` adds, writes verification verdict into the project summary table.                                                                                                                                                                                        |
 | `manuscript-scaffold` | Copy the bundled LaTeX skeleton into the user's manuscript dir, optionally apply a journal-specific `\documentclass` from the bundled registry, optionally clone an Overleaf project (token never persisted to tracked files), commit on the default branch, ask before pushing. Called by `/start-research` phase 6; also standalone-invocable. |
 
 ### 4 hooks
 
-| Hook | Event | Behavior |
-|---|---|---|
-| `pii-scrub` | `PreToolUse:Write\|Edit` | Blocks writes containing PII (emails / SSNs / subject IDs by default; configurable). |
-| `memory-load` | `SessionStart` | Auto-injects `.claude/agent-memory/*/MEMORY.md` into session context. |
-| `citation-warn` | `PostToolUse:Write\|Edit` | Heuristic non-blocking warning when manuscript markdown has uncited paragraphs. |
-| `setup-nudge` | `SessionStart` | One-line non-blocking nudge to run `/omcr-setup` then `/start-research` if CLAUDE.md is missing the `## Project context` or `## Research stack` blocks. |
+| Hook              | Event                      | Behavior                                                                                                                                                        |
+| ----------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pii-scrub`     | `PreToolUse:Write\|Edit`  | Blocks writes containing PII (emails / SSNs / subject IDs by default; configurable).                                                                            |
+| `memory-load`   | `SessionStart`           | Auto-injects `.claude/agent-memory/*/MEMORY.md` into session context.                                                                                         |
+| `citation-warn` | `PostToolUse:Write\|Edit` | Heuristic non-blocking warning when manuscript markdown has uncited paragraphs.                                                                                 |
+| `setup-nudge`   | `SessionStart`           | One-line non-blocking nudge to run `/omcr-setup` then `/start-research` if CLAUDE.md is missing the `## Project context` or `## Research stack` blocks. |
 
 ## Documentation
 
@@ -158,19 +147,19 @@ To author your own preset: see [`wiki/Specializing.md`](wiki/Specializing.md). P
 
 OMCR treats [`oh-my-claudecode`](https://github.com/Yeachan-Heo/oh-my-claudecode) as a *companion*, not a dependency. With OMC installed alongside, the following components fit naturally into research workflows. Pick the ones relevant to your project — you don't have to use all of them.
 
-| Component | Why for research |
-|---|---|
-| `@scientist` agent | Statistical-rigor enforcer (CIs / p-values / effect sizes / `[LIMITATION]` markers). Companion to `@analysis-implementer`. |
-| `@document-specialist` agent | Heavier-weight literature research backed by OMC's Context Hub (cached fetches, structured notes). Use alongside `@literature-curator` when a survey-scale dive is needed; OMCR's curator handles per-claim citation resolution and BibTeX/summary-table bookkeeping on its own. |
-| `@verifier` agent | Evidence-based completion checks — rejects "should work" claims without fresh test output. |
-| `@tracer` agent + `/oh-my-claudecode:trace` | Evidence-driven competing-hypotheses ranking with disconfirmation. Maps to methods/results validation. |
-| `@writer` agent | Technical-documentation writer for lab protocols, methods appendices, reproducibility guides. |
-| `@test-engineer` agent | TDD-discipline for analysis-script edge case coverage. |
-| `@git-master` agent | Atomic-commit discipline — independently revertable analysis steps. |
-| `/oh-my-claudecode:autoresearch` skill | Bounded evaluator-driven iteration loop with per-iteration JSON + decision logs. |
-| `/oh-my-claudecode:deep-interview` skill | Socratic clarification of vague research goals into testable hypotheses. |
-| OMC orchestration skills (`ralph`, `team`, `autopilot`, `ralplan`, `ultraqa`, `autoresearch`, …) | Multi-iteration / parallel / consensus orchestrators for analysis runs, literature scans, must-finish revisions. See [`wiki/With-OMC.md#recipes--pairing-omcr-with-omc`](wiki/With-OMC.md#recipes--pairing-omcr-with-omc) for 5 worked recipes. |
-| `wiki_*` / `notepad_*` / `state_*` / `python_repl` MCP tools | Literature wiki / hypothesis register / experiment-run registry / stateful Python REPL. |
+| Component                                                                                                     | Why for research                                                                                                                                                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@scientist` agent                                                                                          | Statistical-rigor enforcer (CIs / p-values / effect sizes /`[LIMITATION]` markers). Companion to `@analysis-implementer`.                                                                                                                                                      |
+| `@document-specialist` agent                                                                                | Heavier-weight literature research backed by OMC's Context Hub (cached fetches, structured notes). Use alongside `@literature-curator` when a survey-scale dive is needed; OMCR's curator handles per-claim citation resolution and BibTeX/summary-table bookkeeping on its own. |
+| `@verifier` agent                                                                                           | Evidence-based completion checks — rejects "should work" claims without fresh test output.                                                                                                                                                                                        |
+| `@tracer` agent + `/oh-my-claudecode:trace`                                                               | Evidence-driven competing-hypotheses ranking with disconfirmation. Maps to methods/results validation.                                                                                                                                                                             |
+| `@writer` agent                                                                                             | Technical-documentation writer for lab protocols, methods appendices, reproducibility guides.                                                                                                                                                                                      |
+| `@test-engineer` agent                                                                                      | TDD-discipline for analysis-script edge case coverage.                                                                                                                                                                                                                             |
+| `@git-master` agent                                                                                         | Atomic-commit discipline — independently revertable analysis steps.                                                                                                                                                                                                               |
+| `/oh-my-claudecode:autoresearch` skill                                                                      | Bounded evaluator-driven iteration loop with per-iteration JSON + decision logs.                                                                                                                                                                                                   |
+| `/oh-my-claudecode:deep-interview` skill                                                                    | Socratic clarification of vague research goals into testable hypotheses.                                                                                                                                                                                                           |
+| OMC orchestration skills (`ralph`, `team`, `autopilot`, `ralplan`, `ultraqa`, `autoresearch`, …) | Multi-iteration / parallel / consensus orchestrators for analysis runs, literature scans, must-finish revisions. See[`wiki/With-OMC.md#recipes--pairing-omcr-with-omc`](wiki/With-OMC.md#recipes--pairing-omcr-with-omc) for 5 worked recipes.                                      |
+| `wiki_*` / `notepad_*` / `state_*` / `python_repl` MCP tools                                          | Literature wiki / hypothesis register / experiment-run registry / stateful Python REPL.                                                                                                                                                                                            |
 
 Install OMC alongside via the Claude Code marketplace, or `npm i -g oh-my-claude-sisyphus`. Full mapping: [`wiki/With-OMC.md`](wiki/With-OMC.md) + [`wiki/OMC-Tool-Reference.md`](wiki/OMC-Tool-Reference.md).
 

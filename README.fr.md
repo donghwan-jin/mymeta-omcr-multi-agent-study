@@ -6,17 +6,19 @@
 
 _N'apprenez pas les outils de recherche. Utilisez simplement OMCR._
 
-OMCR est le frère orienté recherche de [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode). Tandis qu'OMC orchestre le travail de code général avec des moteurs d'exécution (`ralph`, `team`, `autopilot`, `ultraqa`, `ultrawork`), OMCR orchestre le *workflow de recherche* avec **6 moteurs spécifiques au domaine** — `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand`, et l'autonome `/supervisor-drive`. Utilisez-les seuls ou combinez-les : les moteurs OMCR tournent à l'intérieur des boucles génériques d'OMC pour les retries (`/ralph`), le parallélisme (`/team`, `/ultrawork`), l'exploration multi-stratégie (`/ultraqa`) ou les drives à budget contrôlé (`/autopilot`). Voir [`wiki/Orchestration-Comparison.md`](wiki/Orchestration-Comparison.md) pour la matrice complète task → tool et [`wiki/With-OMC.md`](wiki/With-OMC.md) pour des recettes concrètes.
+OMCR est un espace de travail de recherche pour Claude Code : six agents — `@supervisor`, `@analysis-implementer`, `@paper-writer`, `@figure-descriptor`, `@reviewer`, `@literature-curator` — avec qui vous travaillez côte à côte sur l'hypothèse, l'analyse, l'écriture, les figures, les citations, la review. Six moteurs d'orchestration automatisent les boucles courantes quand vous voulez du hands-off. Combinez-le avec [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) si vous avez besoin par-dessus d'orchestration générique (retries, parallélisme, contrôle de budget).
 
-Une équipe de recherche de 6 agents + 6 moteurs d'orchestration + 4 commandes setup/workflow + 14 skills (1 primitive + 13 backing surfaces) + 4 hooks légers. Walkthrough complet des moteurs : [`wiki/Using-Orchestration.md`](wiki/Using-Orchestration.md)
+Une équipe de recherche de 6 agents + 6 moteurs d'orchestration + 4 commandes setup/workflow + 14 skills + 4 hooks légers.
 
 > **Statut : v0.1.** Des breaking changes sont probables. Feedback et PRs bienvenus.
 
 > **Documentation complète :** [`wiki/Home.md`](wiki/Home.md)
 
-## Install
+## Quick start
 
-**Recommandé — flux Claude Code marketplace** (une commande slash par ligne, à saisir une par une) :
+**Step 1: Installation**
+
+Installation via marketplace/plugin (recommandé). Ce sont des commandes slash de Claude Code — saisissez-les **une à la fois** (coller les deux lignes en même temps échoue) :
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
@@ -26,50 +28,36 @@ Une équipe de recherche de 6 agents + 6 moteurs d'orchestration + 4 commandes s
 /plugin install oh-my-claudecode-research
 ```
 
-**Alternative — checkout manuel** (sans gestionnaire de plugins) :
+Checkout manuel (sans gestionnaire de plugins) :
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
-Puis ouvrez Claude Code et lancez `/plugin` pour le charger. Après chargement (quel que soit le chemin) :
-- 6 agents apparaissent dans le picker `@`-mention
-- 10 commandes slash apparaissent dans le picker : `/omcr-setup`, `/start-research`, `/todofig`, `/sync` (setup/workflow) + `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand`, `/supervisor-drive` (moteurs d'orchestration)
-- 14 skills deviennent appelables (7 setup/workflow + 1 primitive `orchestrate` + 6 engine skills)
-- 4 hooks s'enregistrent au démarrage de session (garde PII, auto-load MEMORY, avertissement de citation, setup nudge)
+**Step 2: Configuration**
 
-**Cherry-pick par fichier** (sans gestionnaire de plugins — copie d'agents dans un projet spécifique) :
-
-```bash
-git clone https://github.com/youngeun1209/oh-my-claudecode-research /path/to/checkout
-cp /path/to/checkout/agents/*.md /path/to/your-project/.claude/agents/
-```
-
-Cette voie saute les commandes, les skills et les hooks. Pour la parité complète des fonctionnalités, utilisez l'installation du plugin.
-
-## Quick start
-
-Après installation, ouvrez un projet de recherche et lancez dans l'ordre :
+Dans une session Claude Code de votre projet de recherche, lancez dans l'ordre — **une à la fois** (coller les deux lignes en même temps échoue) :
 
 ```
 /omcr-setup
+```
+
+```
 /start-research
 ```
 
-**`/omcr-setup`** est style installation — aucune question sur votre recherche. Pose juste l'infrastructure : blocs vides `## Project context` / `## Research stack` / `## Language preference` dans `CLAUDE.md`, `.claude/agent-memory/<agent>/MEMORY.md` pour les 6 agents (template canonique), `paper/references.bib` + `./references.csv` vides pour le literature-curator, et une allowlist de permissions curée dans `.claude/settings.json` (git en lecture seule, recherche de fichiers, build LaTeX, API de citation, figure crop — opt-in pour l'analyse Python ; git write et suppression de fichiers restent manuels).
+`/omcr-setup` pose l'infrastructure — blocs vides `## Project context` / `## Research stack` / `## Language preference` dans `CLAUDE.md`, `.claude/agent-memory/<agent>/MEMORY.md` pour les 6 agents, `paper/references.bib` + `./references.csv` vides pour le literature-curator, et une allowlist de permissions curée dans `.claude/settings.json`. **Aucune question sur votre recherche.**
 
-**`/start-research`** est l'entretien. Il vous guide pour remplir ces placeholders :
+`/start-research` est l'entretien. Il vous guide pour remplir ces placeholders :
 - **Project context** (working title, domaine, venue cible, hypothèse centrale, sujet de recherche, datasets, fil narratif)
 - **Research stack** (chemins deck/outline, nombre de figures, chemins BibTeX + summary-table, email CrossRef optionnel)
 - **Preset overlay** (optionnel — `examples/neuro-fmri/` etc. — remplace uniquement les fichiers `MEMORY.md` d'agents toujours byte-identiques au template canonique)
 - **Manuscript scaffold** (délègue au skill `manuscript-scaffold` : LaTeX skeleton + lookup de template de revue + clone Overleaf optionnel)
 
-Si vous lancez `/start-research` avant `/omcr-setup`, il propose de lancer `/omcr-setup` d'abord. Les champs scientifiques sautés sont sauvés comme `[TBD: <note courte>]` — jamais inventés — pour que `@supervisor` sache faire le suivi.
+Si vous lancez `/start-research` avant `/omcr-setup`, il propose de lancer `/omcr-setup` d'abord. Les champs scientifiques sautés sont sauvés comme `[TBD: <note courte>]` — jamais inventés — pour que `@supervisor` sache faire le suivi. Si vous sautez les deux, le hook `setup-nudge` de SessionStart imprime un rappel d'une ligne à chaque session jusqu'à initialisation (supprimer avec `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1`).
 
-Si vous sautez les deux, le hook `setup-nudge` de SessionStart imprime un rappel d'une ligne à chaque session jusqu'à initialisation. Supprimer avec `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1`.
-
-Après les deux, démarrez une vraie conversation :
+**Step 3: Démarrer**
 
 ```
 @supervisor where are we?

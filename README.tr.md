@@ -6,17 +6,19 @@
 
 _Araştırma araçlarını öğrenmeyin. Sadece OMCR kullanın._
 
-OMCR, [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)'un araştırma odaklı kardeşidir. OMC genel kod işlerini yürütme motorlarıyla (`ralph`, `team`, `autopilot`, `ultraqa`, `ultrawork`) orkestre ederken, OMCR *araştırma akışını* **6 alana özel motor** ile orkestre eder — `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand` ve otonom `/supervisor-drive`. Tek başlarına veya birlikte kullanın: OMCR motorları OMC'nin genel döngüleri içinde retry (`/ralph`), paralellik (`/team`, `/ultrawork`), çok stratejili keşif (`/ultraqa`) veya bütçe takipli sürüşler (`/autopilot`) için çalışır. Tam task → tool matrisi için [`wiki/Orchestration-Comparison.md`](wiki/Orchestration-Comparison.md), uygulamalı tarifler için [`wiki/With-OMC.md`](wiki/With-OMC.md).
+OMCR, Claude Code için bir araştırma çalışma alanıdır: altı ajan — `@supervisor`, `@analysis-implementer`, `@paper-writer`, `@figure-descriptor`, `@reviewer`, `@literature-curator` — ile birlikte hipotez, analiz, yazım, figure, atıflar, review üzerinde çalışırsınız. Hands-off istediğinizde altı orkestrasyon motoru yaygın döngüleri otomatikleştirir. Üstte genel orkestrasyon (retry, paralellik, bütçe takibi) lazımsa [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) ile birleştirin.
 
-6 araştırma ajanı + 6 orkestrasyon motoru + 4 setup/workflow komutu + 14 skill (1 primitive + 13 backing surface) + 4 hafif hook. Tam motor walkthrough: [`wiki/Using-Orchestration.md`](wiki/Using-Orchestration.md)
+6 araştırma ajanı + 6 orkestrasyon motoru + 4 setup/workflow komutu + 14 skill + 4 hafif hook.
 
 > **Durum: v0.1.** Breaking change'ler muhtemel. Geri bildirim ve PR'lar memnuniyetle.
 
 > **Tam dokümantasyon:** [`wiki/Home.md`](wiki/Home.md)
 
-## Install
+## Quick start
 
-**Önerilen — Claude Code marketplace akışı** (satır başına bir slash komutu, teker teker girin):
+**Step 1: Kurulum**
+
+Marketplace/plugin kurulumu (önerilir). Bunlar Claude Code slash komutlarıdır — **teker teker** girin (iki satırı aynı anda yapıştırırsanız hata verir):
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
@@ -26,50 +28,36 @@ OMCR, [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)'un ara
 /plugin install oh-my-claudecode-research
 ```
 
-**Alternatif — manuel checkout** (plugin yöneticisi olmadan):
+Manuel checkout (plugin yöneticisi olmadan):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
-Sonra Claude Code'u açın ve yüklemek için `/plugin` çalıştırın. Yüklemeden sonra (hangi yoldan olursa):
-- 6 ajan `@`-mention seçicisinde görünür
-- 10 slash komutu seçicide görünür: `/omcr-setup`, `/start-research`, `/todofig`, `/sync` (setup/workflow) + `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand`, `/supervisor-drive` (orkestrasyon motorları)
-- 14 skill çağrılabilir hale gelir (7 setup/workflow + 1 primitive `orchestrate` + 6 engine skill)
-- 4 hook oturum başında kaydolur (PII koruma, MEMORY otomatik yükleme, atıf uyarısı, setup nudge)
+**Step 2: Yapılandırma**
 
-**Dosya-bazlı cherry-pick** (plugin yöneticisi yok — sadece ajanları belirli bir projeye kopyala):
-
-```bash
-git clone https://github.com/youngeun1209/oh-my-claudecode-research /path/to/checkout
-cp /path/to/checkout/agents/*.md /path/to/your-project/.claude/agents/
-```
-
-Bu yol komutları, skill'leri ve hook'ları atlar. Tam özellik için plugin kurulumunu kullanın.
-
-## Quick start
-
-Kurduktan sonra bir araştırma projesi açın ve sırayla çalıştırın:
+Araştırma projenizdeki bir Claude Code oturumu içinde sırayla çalıştırın — **teker teker** (iki satırı aynı anda yapıştırırsanız hata verir):
 
 ```
 /omcr-setup
+```
+
+```
 /start-research
 ```
 
-**`/omcr-setup`** kurulum tarzıdır — araştırmanız hakkında soru yok. Sadece altyapı serer: `CLAUDE.md`'de boş `## Project context` / `## Research stack` / `## Language preference` blokları, 6 ajan için `.claude/agent-memory/<agent>/MEMORY.md` (kanonik template), literature-curator için boş `paper/references.bib` + `./references.csv`, ve `.claude/settings.json`'da küratörlü izin allowlist (read-only git, dosya araması, LaTeX build, citation API, figure crop — Python analizi opt-in; git write ve dosya silme elle kalır).
+`/omcr-setup` altyapıyı serer — `CLAUDE.md`'de boş `## Project context` / `## Research stack` / `## Language preference` blokları, 6 ajanın hepsi için `.claude/agent-memory/<agent>/MEMORY.md`, literature-curator için boş `paper/references.bib` + `./references.csv`, ve `.claude/settings.json`'da küratörlü izin allowlist. **Araştırmanız hakkında soru yok.**
 
-**`/start-research`** mülakattır. Bu placeholder'ları doldurmanızda size eşlik eder:
+`/start-research` mülakattır. Bu placeholder'ları doldurmanızda size eşlik eder:
 - **Project context** (çalışma başlığı, alan, hedef venue, merkezi hipotez, araştırma konusu, datasetler, anlatı omurgası)
 - **Research stack** (deck/outline yolları, figure sayısı, BibTeX + summary-table yolları, opsiyonel CrossRef email)
 - **Preset overlay** (opsiyonel — `examples/neuro-fmri/` vb. — sadece hâlâ kanonik template ile byte-identical olan `MEMORY.md` dosyalarını değiştirir)
 - **Manuscript scaffold** (`manuscript-scaffold` skill'ine delege: LaTeX skeleton + dergi template lookup + opsiyonel Overleaf clone)
 
-`/start-research`'i `/omcr-setup`'tan önce çalıştırırsanız, önce `/omcr-setup`'u çalıştırmayı önerir. Atlanan bilimsel alanlar `[TBD: <kısa not>]` olarak kaydedilir — asla uydurulmaz — ki `@supervisor` follow-up etmesi gerektiğini bilsin.
+`/start-research`'i `/omcr-setup`'tan önce çalıştırırsanız, önce `/omcr-setup`'u çalıştırmayı önerir. Atlanan bilimsel alanlar `[TBD: <kısa not>]` olarak kaydedilir — asla uydurulmaz — ki `@supervisor` follow-up etmesi gerektiğini bilsin. İkisini de atlarsanız, SessionStart `setup-nudge` hook'u initialize edene kadar her oturumda tek satırlık hatırlatma yazdırır (`CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1` ile susturulur).
 
-İkisini de atlarsanız, SessionStart `setup-nudge` hook'u initialize edene kadar her oturumda tek satırlık hatırlatma yazdırır. `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1` ile susturulur.
-
-İkisinden sonra gerçek bir konuşma başlatın:
+**Step 3: Başla**
 
 ```
 @supervisor where are we?

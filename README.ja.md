@@ -6,17 +6,19 @@
 
 _リサーチ用ツールを学ぶ必要はありません。OMCR をそのまま使ってください。_
 
-OMCR は [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) のリサーチ特化版です。OMC が汎用コードワークを実行エンジン(`ralph`、`team`、`autopilot`、`ultraqa`、`ultrawork`)でオーケストレーションするのに対し、OMCR は *リサーチワークフロー* を **6 つのドメイン特化エンジン** ── `/iterate-revision`、`/literature-sweep`、`/respond-reviewer`、`/figure-bake`、`/outline-expand`、そして自律モードの `/supervisor-drive` ── でオーケストレーションします。どちらも単独で使えますし、組み合わせも可能です:OMCR エンジンは OMC の汎用ループ内で動作し、リトライ(`/ralph`)、並列実行(`/team`、`/ultrawork`)、多戦略探索(`/ultraqa`)、予算追跡型の自律ドライブ(`/autopilot`)に組み込めます。task → tool マトリクスは [`wiki/Orchestration-Comparison.md`](wiki/Orchestration-Comparison.md)、実践レシピは [`wiki/With-OMC.md`](wiki/With-OMC.md) を参照してください。
+OMCR は Claude Code 向けのリサーチワークスペースです: 6 つのエージェント ── `@supervisor`、`@analysis-implementer`、`@paper-writer`、`@figure-descriptor`、`@reviewer`、`@literature-curator` ── と一緒に仮説、分析、執筆、図、引用、レビューを進めます。ハンズオフにしたいときは、6 つのオーケストレーションエンジンがよくあるループを自動化します。上位レイヤで汎用的なオーケストレーション(リトライ、並列実行、予算追跡)が必要なら [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) と組み合わせてください。
 
-6 名のリサーチチームエージェント + 6 つのオーケストレーションエンジン + 4 つの setup/workflow コマンド + 14 のスキル(1 つの primitive + 13 の backing surface) + 4 つの軽量フック。エンジンのフルウォークスルー: [`wiki/Using-Orchestration.md`](wiki/Using-Orchestration.md)
+6 名のリサーチチームエージェント + 6 つのオーケストレーションエンジン + 4 つの setup/workflow コマンド + 14 のスキル + 4 つの軽量フック。
 
 > **ステータス: v0.1。** Breaking change が入る可能性があります。フィードバックや PR を歓迎します。
 
 > **完全なドキュメント:** [`wiki/Home.md`](wiki/Home.md)
 
-## Install
+## Quick start
 
-**推奨 ── Claude Code marketplace 経由**(1 行ずつ、スラッシュコマンドを 1 つずつ入力):
+**Step 1: インストール**
+
+Marketplace/plugin インストール(推奨)。これらは Claude Code のスラッシュコマンドです ── **1 つずつ入力してください**(2 行を同時に貼り付けると失敗します):
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
@@ -26,50 +28,36 @@ OMCR は [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) の
 /plugin install oh-my-claudecode-research
 ```
 
-**代替 ── 手動 checkout**(プラグインマネージャなし):
+手動 checkout(プラグインマネージャなし):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
-その後 Claude Code を開いて `/plugin` を実行してロード。ロード後(いずれの経路でも):
-- 6 つのエージェントが `@`-mention ピッカーに表示
-- 10 個のスラッシュコマンドがピッカーに表示: `/omcr-setup`、`/start-research`、`/todofig`、`/sync`(setup/workflow) + `/iterate-revision`、`/literature-sweep`、`/respond-reviewer`、`/figure-bake`、`/outline-expand`、`/supervisor-drive`(オーケストレーションエンジン)
-- 14 のスキルが呼び出し可能になる(7 つの setup/workflow + 1 つの primitive `orchestrate` + 6 つの engine skill)
-- 4 つの hook がセッション開始時に登録(PII ガード、MEMORY 自動ロード、引用警告、setup nudge)
+**Step 2: セットアップ**
 
-**ファイル単位の cherry-pick**(プラグインマネージャなし ── 特定プロジェクトに agents だけコピー):
-
-```bash
-git clone https://github.com/youngeun1209/oh-my-claudecode-research /path/to/checkout
-cp /path/to/checkout/agents/*.md /path/to/your-project/.claude/agents/
-```
-
-この方式ではコマンド、スキル、フックがスキップされます。完全な機能セットが必要ならプラグインインストールを推奨。
-
-## Quick start
-
-インストール後、リサーチプロジェクトを開いて順に実行:
+リサーチプロジェクトの Claude Code セッション内で順に実行 ── **1 つずつ入力してください**(2 行を同時に貼り付けると失敗します):
 
 ```
 /omcr-setup
+```
+
+```
 /start-research
 ```
 
-**`/omcr-setup`** はインストール型 ── リサーチ内容についての質問はありません。インフラだけを敷きます: `CLAUDE.md` 内の空の `## Project context` / `## Research stack` / `## Language preference` ブロック、6 つのエージェントの `.claude/agent-memory/<agent>/MEMORY.md`(canonical テンプレート)、literature-curator 用の空の `paper/references.bib` + `./references.csv`、そしてキュレーションされた `.claude/settings.json` パーミッション allowlist(read-only git、ファイル検索、LaTeX build、引用 API、figure crop ── Python 分析は opt-in、git write とファイル削除は手動のまま)。
+`/omcr-setup` はインフラを敷きます ── `CLAUDE.md` 内の空の `## Project context` / `## Research stack` / `## Language preference` ブロック、6 つのエージェントの `.claude/agent-memory/<agent>/MEMORY.md`、literature-curator 用の空の `paper/references.bib` + `./references.csv`、そしてキュレーションされた `.claude/settings.json` パーミッション allowlist。**リサーチ内容についての質問はありません。**
 
-**`/start-research`** はインタビューです。プレースホルダの埋め方をガイドします:
+`/start-research` はインタビューです。プレースホルダの埋め方をガイドします:
 - **Project context**(作業タイトル、分野、ターゲット venue、中心仮説、リサーチトピック、データセット、ナラティブ)
 - **Research stack**(deck/outline パス、figure 数、BibTeX + summary-table パス、任意の CrossRef メール)
 - **Preset overlay**(任意 ── `examples/neuro-fmri/` など ── canonical テンプレートとバイト一致のエージェント `MEMORY.md` のみ置き換え)
 - **Manuscript scaffold**(`manuscript-scaffold` スキルに委譲: LaTeX skeleton + ジャーナルテンプレート lookup + 任意の Overleaf clone)
 
-`/omcr-setup` の前に `/start-research` を実行すると、先に `/omcr-setup` を実行するか確認します。スキップした科学フィールドは `[TBD: <短いメモ>]` として保存され ── 決して捏造しません ── `@supervisor` が後でフォローアップできるようにします。
+`/omcr-setup` の前に `/start-research` を実行すると、先に `/omcr-setup` を実行するか確認します。スキップした科学フィールドは `[TBD: <短いメモ>]` として保存され ── 決して捏造しません ── `@supervisor` が後でフォローアップできるようにします。両方をスキップした場合、SessionStart の `setup-nudge` フックが毎セッション 1 行リマインダーを出します(`CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1` で抑制可能)。
 
-両方をスキップした場合、SessionStart の `setup-nudge` フックが毎セッション 1 行リマインダーを出します。`CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1` で抑制可能。
-
-両方が終わったら、本物の会話を始めましょう:
+**Step 3: 作業開始**
 
 ```
 @supervisor where are we?

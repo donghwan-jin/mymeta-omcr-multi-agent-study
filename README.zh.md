@@ -6,17 +6,19 @@
 
 _别再去学科研工具了。直接用 OMCR。_
 
-OMCR 是 [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) 的科研定制版。OMC 用执行引擎(`ralph`、`team`、`autopilot`、`ultraqa`、`ultrawork`)编排通用代码工作,而 OMCR 用 **6 个领域专用引擎** —— `/iterate-revision`、`/literature-sweep`、`/respond-reviewer`、`/figure-bake`、`/outline-expand`,以及自主模式的 `/supervisor-drive` —— 来编排*科研工作流*。两者可单独使用,也可组合:OMCR 引擎可在 OMC 的通用循环中运行,用于重试(`/ralph`)、并行(`/team`、`/ultrawork`)、多策略探索(`/ultraqa`)或预算追踪式自主驱动(`/autopilot`)。完整的 task → tool 矩阵见 [`wiki/Orchestration-Comparison.md`](wiki/Orchestration-Comparison.md),实战配方见 [`wiki/With-OMC.md`](wiki/With-OMC.md)。
+OMCR 是面向 Claude Code 的科研工作空间:6 名 agent —— `@supervisor`、`@analysis-implementer`、`@paper-writer`、`@figure-descriptor`、`@reviewer`、`@literature-curator` —— 与你一起完成假设、分析、写作、figure、引用、review。需要 hands-off 时,6 个编排引擎自动化常见循环。如果在上层还需要通用编排(重试、并行、预算追踪),就与 [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) 组合使用。
 
-6 名研究团队代理 + 6 个编排引擎 + 4 个 setup/workflow 命令 + 14 个技能(1 个 primitive + 13 个 backing surface) + 4 个轻量级 hook。引擎完整教程: [`wiki/Using-Orchestration.md`](wiki/Using-Orchestration.md)
+6 名研究团队 agent + 6 个编排引擎 + 4 个 setup/workflow 命令 + 14 个技能 + 4 个轻量级 hook。
 
 > **状态:v0.1。** 可能出现 breaking change。欢迎反馈与 PR。
 
 > **完整文档:** [`wiki/Home.md`](wiki/Home.md)
 
-## Install
+## Quick start
 
-**推荐 —— Claude Code marketplace 流程**(每行一个斜杠命令,逐条输入):
+**Step 1: 安装**
+
+Marketplace/plugin 安装(推荐)。这些是 Claude Code 的斜杠命令 —— **一次输入一个**(同时粘贴两行会失败):
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
@@ -26,50 +28,36 @@ OMCR 是 [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) 的
 /plugin install oh-my-claudecode-research
 ```
 
-**替代 —— 手动 checkout**(不用插件管理器):
+手动 checkout(不用插件管理器):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
-之后打开 Claude Code,运行 `/plugin` 加载。加载后(任一路径):
-- 6 个代理出现在 `@`-mention 选择器中
-- 10 个斜杠命令出现在选择器中:`/omcr-setup`、`/start-research`、`/todofig`、`/sync`(setup/workflow) + `/iterate-revision`、`/literature-sweep`、`/respond-reviewer`、`/figure-bake`、`/outline-expand`、`/supervisor-drive`(编排引擎)
-- 14 个技能可被调用(7 个 setup/workflow + 1 个 primitive `orchestrate` + 6 个引擎技能)
-- 4 个 hook 在会话启动时注册(PII 守护、MEMORY 自动加载、引用警告、setup nudge)
+**Step 2: 设置**
 
-**按文件 cherry-pick**(无插件管理器 —— 仅复制 agents 到特定项目):
-
-```bash
-git clone https://github.com/youngeun1209/oh-my-claudecode-research /path/to/checkout
-cp /path/to/checkout/agents/*.md /path/to/your-project/.claude/agents/
-```
-
-这种方式跳过命令、技能和 hook。需要完整功能请用插件安装。
-
-## Quick start
-
-安装后,打开一个研究项目,按顺序运行:
+在你的研究项目的 Claude Code 会话中按顺序运行 —— **一次输入一个**(同时粘贴两行会失败):
 
 ```
 /omcr-setup
+```
+
+```
 /start-research
 ```
 
-**`/omcr-setup`** 是安装式 —— 不询问你的研究。只铺基础设施:`CLAUDE.md` 中的空 `## Project context` / `## Research stack` / `## Language preference` 块、6 个代理的 `.claude/agent-memory/<agent>/MEMORY.md`(canonical 模板)、literature-curator 用的空 `paper/references.bib` + `./references.csv`,以及精选的 `.claude/settings.json` 权限 allowlist(只读 git、文件搜索、LaTeX build、引用 API、figure crop —— Python 分析为 opt-in;git write 和文件删除保持手动)。
+`/omcr-setup` 铺基础设施 —— `CLAUDE.md` 中的空 `## Project context` / `## Research stack` / `## Language preference` 块、6 个 agent 的 `.claude/agent-memory/<agent>/MEMORY.md`、literature-curator 用的空 `paper/references.bib` + `./references.csv`,以及精选的 `.claude/settings.json` 权限 allowlist。**不询问你的研究。**
 
-**`/start-research`** 是访谈。它引导你填充上述占位符:
+`/start-research` 是访谈。它引导你填充上述占位符:
 - **Project context**(工作标题、领域、目标 venue、中心假设、研究主题、数据集、叙述主线)
 - **Research stack**(deck/outline 路径、figure 数量、BibTeX + summary-table 路径、可选 CrossRef 邮箱)
-- **Preset overlay**(可选 —— `examples/neuro-fmri/` 等 —— 仅替换仍与 canonical 模板字节相同的代理 `MEMORY.md`)
+- **Preset overlay**(可选 —— `examples/neuro-fmri/` 等 —— 仅替换仍与 canonical 模板字节相同的 agent `MEMORY.md`)
 - **Manuscript scaffold**(委派给 `manuscript-scaffold` 技能:LaTeX skeleton + journal 模板查询 + 可选 Overleaf clone)
 
-如果在 `/omcr-setup` 之前运行 `/start-research`,它会询问是否先运行 `/omcr-setup`。被跳过的科学字段以 `[TBD: <简短备注>]` 保存 —— 从不捏造 —— 这样 `@supervisor` 知道需要后续跟进。
+如果在 `/omcr-setup` 之前运行 `/start-research`,它会询问是否先运行 `/omcr-setup`。被跳过的科学字段以 `[TBD: <简短备注>]` 保存 —— 从不捏造 —— 这样 `@supervisor` 知道需要后续跟进。两者都跳过时,SessionStart 的 `setup-nudge` hook 每个会话都会打印一行提醒(可通过 `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1` 关闭)。
 
-两者都跳过时,SessionStart 的 `setup-nudge` hook 每个会话都会打印一行提醒。可通过 `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1` 关闭。
-
-两者都完成后,开始真正的对话:
+**Step 3: 开始工作**
 
 ```
 @supervisor where are we?

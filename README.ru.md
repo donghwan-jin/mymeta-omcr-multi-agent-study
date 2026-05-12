@@ -6,17 +6,19 @@
 
 _Не изучайте инструменты для исследований. Просто используйте OMCR._
 
-OMCR — это исследовательский собрат [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode). Если OMC оркестрирует общую работу с кодом через исполняющие движки (`ralph`, `team`, `autopilot`, `ultraqa`, `ultrawork`), то OMCR оркестрирует *исследовательский воркфлоу* через **6 доменно-специфичных движков** — `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand` и автономный `/supervisor-drive`. Используйте по отдельности или комбинируйте: движки OMCR работают внутри универсальных циклов OMC для ретраев (`/ralph`), параллелизма (`/team`, `/ultrawork`), многострагической разведки (`/ultraqa`) или прогонов с бюджетом (`/autopilot`). Полная матрица task → tool в [`wiki/Orchestration-Comparison.md`](wiki/Orchestration-Comparison.md), реальные рецепты в [`wiki/With-OMC.md`](wiki/With-OMC.md).
+OMCR — это исследовательское рабочее пространство для Claude Code: шесть агентов — `@supervisor`, `@analysis-implementer`, `@paper-writer`, `@figure-descriptor`, `@reviewer`, `@literature-curator` — с которыми вы работаете бок о бок над гипотезой, анализом, написанием, figure, цитатами, ревью. Шесть оркестрационных движков автоматизируют типичные циклы, когда вы хотите hands-off. Комбинируйте с [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode), если сверху нужна универсальная оркестрация (ретраи, параллелизм, контроль бюджета).
 
-Исследовательская команда из 6 агентов + 6 движков оркестрации + 4 setup/workflow команды + 14 скиллов (1 primitive + 13 backing surfaces) + 4 лёгких хука. Полный гайд по движкам: [`wiki/Using-Orchestration.md`](wiki/Using-Orchestration.md)
+Исследовательская команда из 6 агентов + 6 движков оркестрации + 4 setup/workflow команды + 14 скиллов + 4 лёгких хука.
 
 > **Статус: v0.1.** Возможны breaking changes. Фидбек и PR-ы приветствуются.
 
 > **Полная документация:** [`wiki/Home.md`](wiki/Home.md)
 
-## Install
+## Quick start
 
-**Рекомендуется — поток Claude Code marketplace** (по одной слеш-команде на строку, вводите по одной):
+**Step 1: Установка**
+
+Marketplace/plugin установка (рекомендуется). Это слеш-команды Claude Code — вводите **по одной** (если вставить две строки одновременно, упадёт):
 
 ```
 /plugin marketplace add https://github.com/youngeun1209/oh-my-claudecode-research
@@ -26,50 +28,36 @@ OMCR — это исследовательский собрат [oh-my-claudecod
 /plugin install oh-my-claudecode-research
 ```
 
-**Альтернатива — ручной checkout** (без плагин-менеджера):
+Ручной checkout (без плагин-менеджера):
 
 ```bash
 git clone https://github.com/youngeun1209/oh-my-claudecode-research \
   ~/.claude/plugins/oh-my-claudecode-research
 ```
 
-Затем откройте Claude Code и выполните `/plugin` для загрузки. После загрузки (любым путём):
-- 6 агентов появляются в picker-е `@`-mention
-- 10 слеш-команд появляются в picker-е: `/omcr-setup`, `/start-research`, `/todofig`, `/sync` (setup/workflow) + `/iterate-revision`, `/literature-sweep`, `/respond-reviewer`, `/figure-bake`, `/outline-expand`, `/supervisor-drive` (оркестрационные движки)
-- 14 скиллов становятся вызываемыми (7 setup/workflow + 1 primitive `orchestrate` + 6 engine-скиллов)
-- 4 хука регистрируются на старте сессии (PII-страж, авто-загрузка MEMORY, предупреждение о цитатах, setup nudge)
+**Step 2: Настройка**
 
-**Cherry-pick по файлам** (без плагин-менеджера — копируем агентов в конкретный проект):
-
-```bash
-git clone https://github.com/youngeun1209/oh-my-claudecode-research /path/to/checkout
-cp /path/to/checkout/agents/*.md /path/to/your-project/.claude/agents/
-```
-
-Этот способ пропускает команды, скиллы и хуки. Для полного функционала используйте установку плагина.
-
-## Quick start
-
-После установки откройте исследовательский проект и запустите по порядку:
+Внутри сессии Claude Code в вашем исследовательском проекте запустите по порядку — **по одной команде** (если вставить две строки одновременно, упадёт):
 
 ```
 /omcr-setup
+```
+
+```
 /start-research
 ```
 
-**`/omcr-setup`** — установочный режим, никаких вопросов о вашем исследовании. Просто кладёт инфраструктуру: пустые блоки `## Project context` / `## Research stack` / `## Language preference` в `CLAUDE.md`, `.claude/agent-memory/<agent>/MEMORY.md` для всех 6 агентов (канонический шаблон), пустые `paper/references.bib` + `./references.csv` для literature-curator, и курированный allowlist прав в `.claude/settings.json` (read-only git, поиск файлов, LaTeX build, citation API, figure crop — opt-in для Python-анализа; git write и удаление файлов остаются ручными).
+`/omcr-setup` кладёт инфраструктуру — пустые блоки `## Project context` / `## Research stack` / `## Language preference` в `CLAUDE.md`, `.claude/agent-memory/<agent>/MEMORY.md` для всех 6 агентов, пустые `paper/references.bib` + `./references.csv` для literature-curator, и курированный allowlist прав в `.claude/settings.json`. **Никаких вопросов о вашем исследовании.**
 
-**`/start-research`** — это интервью. Оно ведёт вас по заполнению этих плейсхолдеров:
+`/start-research` — это интервью. Оно ведёт вас по заполнению этих плейсхолдеров:
 - **Project context** (working title, область, целевой venue, центральная гипотеза, тема исследования, датасеты, нарративная линия)
 - **Research stack** (пути deck/outline, число figure, пути BibTeX + summary-table, опциональный CrossRef email)
 - **Preset overlay** (опционально — `examples/neuro-fmri/` и т. д. — заменяет только агентские `MEMORY.md`, ещё byte-identical с каноническим шаблоном)
 - **Manuscript scaffold** (делегирует скиллу `manuscript-scaffold`: LaTeX skeleton + lookup шаблона журнала + опциональный Overleaf clone)
 
-Если вы запустите `/start-research` до `/omcr-setup`, он предложит сначала запустить `/omcr-setup`. Пропущенные научные поля сохраняются как `[TBD: <короткая заметка>]` — никогда не выдумываются — чтобы `@supervisor` знал, что нужно follow-up.
+Если вы запустите `/start-research` до `/omcr-setup`, он предложит сначала запустить `/omcr-setup`. Пропущенные научные поля сохраняются как `[TBD: <короткая заметка>]` — никогда не выдумываются — чтобы `@supervisor` знал, что нужно follow-up. Если пропустить оба, хук `setup-nudge` на SessionStart печатает однострочное напоминание каждую сессию до инициализации (отключается через `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1`).
 
-Если пропустить оба, хук `setup-nudge` на SessionStart печатает однострочное напоминание каждую сессию до инициализации. Отключается через `CLAUDE_RESEARCH_DISABLE_SETUP_NUDGE=1`.
-
-После обоих — начинайте реальный разговор:
+**Step 3: Начать работу**
 
 ```
 @supervisor where are we?
