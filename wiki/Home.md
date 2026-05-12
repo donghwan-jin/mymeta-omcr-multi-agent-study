@@ -35,7 +35,7 @@ Are you writing a paper / structured outline doc with figures?
 
 ## What OMCR is
 
-OMCR is a **research-team persona pack**. It does not orchestrate analyses, run code, or call MCPs. It ships agent prompts and conventions that, when loaded into Claude Code, give you 6 specialists you can `@`-mention:
+OMCR is a **research-workflow orchestration plugin**. It coordinates a 6-specialist research team through the paper-writing lifecycle — from hypothesis interview to manuscript scaffold to figure-deck-vs-outline reconciliation. It does not bundle an execution runtime (no MCP server, no parallel/consensus engines); for those, pair with OMC. When loaded into Claude Code, you get 6 specialists you can `@`-mention:
 
 - `@supervisor` — PI-level vision keeper + project orchestrator
 - `@analysis-implementer` — analysis pipeline implementer (field-neutral; overlay a preset for domain flavor)
@@ -44,15 +44,15 @@ OMCR is a **research-team persona pack**. It does not orchestrate analyses, run 
 - `@reviewer` — adversarial pre-submission review at the target venue's level
 - `@literature-curator` — BibTeX + summary-table owner; resolves `[CITE: ...]` placeholders and verifies every citation against CrossRef/OpenAlex
 
-Plus the harness:
+Plus the wiring:
 - 4 hooks (PII guard, MEMORY auto-load, citation warning, setup nudge)
 - 4 slash commands (`/omcr-setup` installs OMCR infrastructure; `/start-research` runs the interview-driven first-project init; `/todofig` and `/sync` cover figure-deck-vs-outline workflows)
 - 3 skills (`cropfig` strips caption bands from exported figure PNGs; `verify-citation` gates every citation added to the bibliography; `manuscript-scaffold` lays down the LaTeX skeleton + optional journal template + optional Overleaf clone)
 
 ## What OMCR is NOT
 
-- Not an orchestration framework. For that, see [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) (the parent project this one builds on).
-- Not a runtime. No MCP server, no Node bridge, no build chain. Just markdown + shell.
+- Not a runtime execution engine. OMCR orchestrates the *research workflow* (which specialist handles which stage of a paper, via `@supervisor` delegation and the `/start-research` → `/todofig` → `/sync` pipeline), but it does not ship parallel/consensus/loop execution engines like OMC's `ralph`, `team`, `autopilot`, `ultrawork`. For those, install [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) alongside — OMCR is designed to compose with OMC, not replace it.
+- Not a runtime in the OMC sense. No MCP server, no Node bridge, no build chain. Just markdown + shell.
 - Not a forked / vendored version of OMC. OMCR works alone or alongside OMC — your choice. See [With-OMC](With-OMC.md) for the companion setup.
 
 ## Versions

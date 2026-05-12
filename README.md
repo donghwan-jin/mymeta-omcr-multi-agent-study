@@ -1,8 +1,12 @@
 # oh-my-claudecode-research
 
-A Claude Code plugin that ships a **6-agent research team** + **4 parameterized commands** + **3 skills** + **4 lightweight hooks**, all tailored for producing research papers (or any structured-figure-and-outline document).
+**Multi-agent orchestration for Claude Code — the research-paper edition. Zero learning curve.**
 
-This is the **research companion** to upstream [`oh-my-claudecode`](https://github.com/Yeachan-Heo/oh-my-claudecode), not a fork. OMCR works standalone or alongside OMC — see [`wiki/With-OMC.md`](wiki/With-OMC.md) for the companion setup.
+_Don't learn paper-writing tooling. Just use OMCR._
+
+OMCR is the research-tailored sibling of [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode). Where OMC orchestrates general code work (`ralph`, `team`, `autopilot`, …), OMCR orchestrates the *paper-writing lifecycle* — hypothesis interview → analysis → figure deck → manuscript → review. Works standalone or with OMC; see [`wiki/With-OMC.md`](wiki/With-OMC.md).
+
+A 6-agent research team + 4 parameterized commands + 3 skills + 4 lightweight hooks.
 
 > **Status: v0.1.** Breaking changes are likely. Feedback and PRs welcome.
 

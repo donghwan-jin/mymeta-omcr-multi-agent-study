@@ -150,7 +150,7 @@ Each agent maintains a persistent memory at `.claude/agent-memory/<agent-name>/M
 
 When editing agents, link to the template file via a relative path so users discover the schema.
 
-## Harness — what's wired in
+## Plugin wiring — what this registers with Claude Code
 
 The plugin manifest (`.claude-plugin/plugin.json`) declares four registries:
 - `agents: ./agents/` — 6 `@`-mentionable agents
