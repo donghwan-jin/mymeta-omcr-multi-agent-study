@@ -14,6 +14,8 @@ OMCR, Claude Code için bir araştırma çalışma alanıdır: altı ajan — `@
 
 > **Tam dokümantasyon:** [`wiki/Home.md`](wiki/Home.md)
 
+> **Claude Code yerine Codex CLI mi kullanıyorsunuz?** Codex port'u [oh-my-codex-research](https://github.com/youngeun1209/oh-my-codex-research) (OMXR) adresinde — aynı 6 ajanlı araştırma ekibi, OpenAI Codex CLI'ye port'lanmış.
+
 ## Quick start
 
 **Step 1: Kurulum**

@@ -14,6 +14,8 @@ OMCR 是面向 Claude Code 的科研工作空间:6 名 agent —— `@supervisor
 
 > **完整文档:** [`wiki/Home.md`](wiki/Home.md)
 
+> **使用 Codex CLI 而不是 Claude Code?** Codex 版本在 [oh-my-codex-research](https://github.com/youngeun1209/oh-my-codex-research) (OMXR) —— 同样的 6 名研究 agent,移植到 OpenAI Codex CLI。
+
 ## Quick start
 
 **Step 1: 安装**

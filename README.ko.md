@@ -14,6 +14,8 @@ OMCR은 Claude Code를 위한 연구 워크스페이스입니다: 6명의 에이
 
 > **전체 문서:** [`wiki/Home.md`](wiki/Home.md)
 
+> **Claude Code 대신 Codex CLI를 쓰시나요?** Codex 포팅은 [oh-my-codex-research](https://github.com/youngeun1209/oh-my-codex-research) (OMXR)에 있습니다 — 동일한 6 에이전트 연구팀을 OpenAI Codex CLI로 옮긴 버전입니다.
+
 ## Quick start
 
 **Step 1: 설치**

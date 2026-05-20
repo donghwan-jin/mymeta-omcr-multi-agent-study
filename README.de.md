@@ -14,6 +14,8 @@ Ein 6-Agenten-Forschungsteam + 6 Orchestrierungs-Engines + 4 Setup/Workflow-Comm
 
 > **Vollständige Dokumentation:** [`wiki/Home.md`](wiki/Home.md)
 
+> **Verwenden Sie Codex CLI statt Claude Code?** Der Codex-Port liegt unter [oh-my-codex-research](https://github.com/youngeun1209/oh-my-codex-research) (OMXR) — dasselbe 6-Agenten-Forschungsteam, portiert auf OpenAI Codex CLI.
+
 ## Quick start
 
 **Step 1: Installation**

@@ -14,6 +14,8 @@ OMCR là một không gian làm việc nghiên cứu cho Claude Code: sáu agent
 
 > **Tài liệu đầy đủ:** [`wiki/Home.md`](wiki/Home.md)
 
+> **Dùng Codex CLI thay vì Claude Code?** Bản port sang Codex nằm tại [oh-my-codex-research](https://github.com/youngeun1209/oh-my-codex-research) (OMXR) — cùng đội nghiên cứu 6 agent, port sang OpenAI Codex CLI.
+
 ## Quick start
 
 **Step 1: Cài đặt**

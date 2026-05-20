@@ -14,6 +14,8 @@ OMCR — это исследовательское рабочее простра
 
 > **Полная документация:** [`wiki/Home.md`](wiki/Home.md)
 
+> **Используете Codex CLI вместо Claude Code?** Порт для Codex живёт в [oh-my-codex-research](https://github.com/youngeun1209/oh-my-codex-research) (OMXR) — та же исследовательская команда из 6 агентов, портированная на OpenAI Codex CLI.
+
 ## Quick start
 
 **Step 1: Установка**
