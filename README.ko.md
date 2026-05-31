@@ -1,5 +1,30 @@
 [English](README.md) | 한국어 | [中文](README.zh.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Tiếng Việt](README.vi.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [Türkçe](README.tr.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Italiano](README.it.md)
 
+# MyMeta OMCR Multi-Agent Research Study
+
+이 저장소는 Young-Eun Lee님의 `oh-my-claudecode-research`를 Fork하여  
+마이메타의 산업 AI, 예지보전, 반도체 장비 데이터 분석, RAG 기반 연구 문서 자동화 가능성을 학습하기 위한 실습 저장소입니다.
+
+## 실습 목적
+
+- Claude Code 기반 Research Agent 구조 이해
+- Multi-Agent Orchestration을 활용한 연구 워크플로우 학습
+- 논문 초안, 문헌 정리, Figure 구성, 리뷰 Agent 구조 이해
+- 마이메타의 산업장비 예지보전 연구와 기술보고서 작성에 적용 가능성 검토
+
+## MyMeta 적용 후보 주제
+
+1. 반도체 장비 예지보전을 위한 Autoencoder, Transformer, CNN 모델 비교 연구
+2. RAG 기반 산업 인증 문서 검색 AI 시스템
+3. XR Digital Twin 기반 산업장비 교육훈련 효과 분석
+4. 산업장비 이상탐지 데이터셋 기반 AI 모델 성능 비교
+
+## 학습 기록
+
+- 2026.06.01: 원본 OMCR 저장소를 Fork하고, MyMeta 실습용 저장소로 구성
+- 2026.06.01: Windows PC OneDrive 작업 폴더에 Clone 완료
+
+
 # oh-my-claudecode-research
 
 **Claude Code를 위한 멀티 에이전트 오케스트레이션 — 연구 전용. 학습 곡선 제로.**
